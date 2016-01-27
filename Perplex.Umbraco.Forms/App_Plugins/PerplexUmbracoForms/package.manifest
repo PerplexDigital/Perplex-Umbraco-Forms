@@ -1,0 +1,6 @@
+{
+  "javascript": [
+	  "~/App_Plugins/UmbracoForms/Backoffice/Common/SettingTypes/perplexcheckboxlist.controller.js",
+	  "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.copy.controller.js"
+  ]
+}

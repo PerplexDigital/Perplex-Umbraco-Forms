@@ -1,0 +1,16 @@
+@model Umbraco.Forms.Mvc.Models.FieldViewModel
+
+@{
+    // default
+    int maxLength = 4000;
+    if (!String.IsNullOrEmpty(Model.AdditionalSettings.FirstOrDefault(x => x.Key == "MaximumLength").Value))
+    {
+        Int32.TryParse(Model.AdditionalSettings.FirstOrDefault(x => x.Key == "MaximumLength").Value, out maxLength);
+    }
+}
+
+<textarea name="@Model.Name" id="@Model.Id" rows="2" cols="20" maxlength="@maxLength" placeholder="@Model.AdditionalSettings.FirstOrDefault(x => x.Key == "Placeholder").Value" @Html.Raw(Model.AdditionalSettings.FirstOrDefault(x => x.Key == "AdditionalAttributes").Value)
+          @{if (Model.Mandatory || Model.Validate) { <text> data-val="true" </text> }}
+          @{if (Model.Mandatory) { <text> data-val-required="@Model.RequiredErrorMessage" </text> }}
+          @{if (Model.Validate) { <text> data-val-regex="@Model.InvalidErrorMessage" data-regex="@Html.Raw(Model.Regex)" </text> }}>@Model.Value</textarea>
+

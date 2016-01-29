@@ -270,6 +270,15 @@
     <Content Include="App_Plugins\UmbracoForms\Backoffice\Form\copyForm.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)App_Plugins\*.*" "$(SolutionDir)..\..\UmbracoFormsExtensions\UmbracoFormsExtensions\App_Plugins" /Y /I /E
+xcopy "$(ProjectDir)Views\*.*" "$(SolutionDir)..\..\UmbracoFormsExtensions\UmbracoFormsExtensions\Views" /Y /I /E
+xcopy "$(ProjectDir)\bin\Release\Perplex.Umbraco.Forms*" "$(SolutionDir)..\..\UmbracoFormsExtensions\UmbracoFormsExtensions\bin" /Y /I /E</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

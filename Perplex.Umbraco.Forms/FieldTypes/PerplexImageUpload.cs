@@ -10,11 +10,11 @@ using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Extensions;
 using Umbraco.Forms.Data;
 
-namespace PerplexUmbraco.Forms.Types
+namespace PerplexUmbraco.Forms.FieldTypes
 {
-    public class PerplexFileUpload : Umbraco.Forms.Core.FieldType
+    public class PerplexImageUpload : Umbraco.Forms.Core.FieldType
     {
-        const string _defaultFileTypes = "doc,docx,pdf,xls,xlsx,zip,rar";
+        const string _defaultFileTypes = "jpg,jpeg,png,gif,tif";
 
         #region Settings
         [Setting("Allowed file types", description = "If nothing is checked, all in the list are allowed",
@@ -47,11 +47,11 @@ namespace PerplexUmbraco.Forms.Types
 
         #endregion
 
-        public PerplexFileUpload()
+        public PerplexImageUpload()
         {
             //Provider
-            this.Id = new Guid("3e170f26-1fcb-4f60-b5d2-1aa2723528fd");
-            this.Name = "Perplex file upload";
+            this.Id = new Guid("11fff56b-7e0e-4bfc-97ba-b5126158d33d");
+            this.Name = "Perplex image upload";
             this.Description = "Renders an upload field";
             this.Icon = "icon-download-alt";
             this.DataType = FieldDataType.String;
@@ -70,53 +70,57 @@ namespace PerplexUmbraco.Forms.Types
                                                           (object) files[field.Id.ToString()].FileName
                                                         };
 
-            #region Perplex extra
-            // Check the allowed file extensions
-            var allowedFileTypesSetting = field.Settings.FirstOrDefault(x => x.Key == "AllowedFileTypes").Value;
-            string[] allowedFileTypes = null;
-            if (!String.IsNullOrEmpty(allowedFileTypesSetting))
-                allowedFileTypes = allowedFileTypesSetting.Split(',');
-            else // use the default
-                allowedFileTypes = _defaultFileTypes.Split(',');
 
-            if (allowedFileTypes.Any())
+            if (postedValues.Any(x => !String.IsNullOrEmpty(x.ToString())) == true)
             {
-                foreach (var file in postedValues.Where(x => !String.IsNullOrEmpty(x.ToString())))
+                #region Perplex extra
+                // Check the allowed file extensions
+                var allowedFileTypesSetting = field.Settings.FirstOrDefault(x => x.Key == "AllowedFileTypes").Value;
+                string[] allowedFileTypes = null;
+                if (!String.IsNullOrEmpty(allowedFileTypesSetting))
+                    allowedFileTypes = allowedFileTypesSetting.Split(',');
+                else // use the default
+                    allowedFileTypes = _defaultFileTypes.Split(',');
+
+                if (allowedFileTypes.Any())
                 {
-                    if (!allowedFileTypes.Contains(Path.GetExtension(file.ToString()).Replace(".", "").ToLower()))
+                    foreach (var file in postedValues.Where(x => !String.IsNullOrEmpty(x.ToString())))
                     {
-                        // Reset the uploaded files
-                        postedValues = null;
-                        return (IEnumerable<string>)new string[1]
+                        if (!allowedFileTypes.Contains(Path.GetExtension(file.ToString()).Replace(".", "").ToLower()))
+                        {
+                            // Reset the uploaded files
+                            postedValues = null;
+                            return (IEnumerable<string>)new string[1]
                           {
                             string.Format(StringExtensions.ParsePlaceHolders(field.Settings.First(x => x.Key == "AllowedFileTypesErrorMessage").Value ?? ""), (object) field.Caption)
                           };
+                        }
                     }
                 }
-            }
 
-            // Check the file size
-            var maxFileLength = field.Settings.FirstOrDefault(x => x.Key == "MaximumFileSize");
-            int maxMegaBytes;
-            if (!String.IsNullOrEmpty(maxFileLength.Value) && Int32.TryParse(maxFileLength.Value, out maxMegaBytes) && maxMegaBytes > 0)
-            {
-                int maxBytes = maxMegaBytes * 1024 * 1024;
-                int index = 0;
-                foreach (string str in files.AllKeys)
+                // Check the file size
+                var maxFileLength = field.Settings.FirstOrDefault(x => x.Key == "MaximumFileSize");
+                int maxMegaBytes;
+                if (!String.IsNullOrEmpty(maxFileLength.Value) && Int32.TryParse(maxFileLength.Value, out maxMegaBytes) && maxMegaBytes > 0)
                 {
-                    HttpPostedFileBase file = files[index];
-                    // ContentLength is in bytes
-                    if (file.ContentLength > maxBytes)
+                    int maxBytes = maxMegaBytes * 1024 * 1024;
+                    int index = 0;
+                    foreach (string str in files.AllKeys)
                     {
-                        // Reset the uploaded files
-                        postedValues = null;
-                        return (IEnumerable<string>)new string[1]
+                        HttpPostedFileBase file = files[index];
+                        // ContentLength is in bytes
+                        if (file.ContentLength > maxBytes)
+                        {
+                            // Reset the uploaded files
+                            postedValues = null;
+                            return (IEnumerable<string>)new string[1]
                           {
                             string.Format(StringExtensions.ParsePlaceHolders(field.Settings.First(x => x.Key == "MaximumFileSizeErrorMessage").Value ?? ""), (object) field.Caption)
                           };
-                    }
+                        }
 
-                    index++;
+                        index++;
+                    }
                 }
             }
 

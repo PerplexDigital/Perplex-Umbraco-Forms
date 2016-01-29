@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Umbraco.Core.IO;
-using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Providers;
 using Umbraco.Forms.Data.Storage;
 using Umbraco.Forms.Mvc.Models.Backoffice;
@@ -25,19 +24,19 @@ namespace PerplexUmbraco.Forms.Controllers
             {
                 using (WorkflowStorage workflowStorage = new WorkflowStorage())
                 {
-                    Form form = formStorage.GetForm(guid);
+                    Umbraco.Forms.Core.Form form = formStorage.GetForm(guid);
 
                     if (form == null)
                         return Request.CreateResponse(HttpStatusCode.NotFound);
 
                     // Get the corresponding workflows
-                    List<Workflow> workflows = new List<Workflow>();
+                    List<Umbraco.Forms.Core.Workflow> workflows = new List<Umbraco.Forms.Core.Workflow>();
                     foreach(var workflowId in form.WorkflowIds){
                         workflows.Add(workflowStorage.GetWorkflow(workflowId));
                     }
 
                     // Clone the form, manual copy because the clone function implemented by Umbraco doesn't work (not serializable)
-                    var newForm = new Form();
+                    var newForm = new Umbraco.Forms.Core.Form();
                     newForm.Pages = form.Pages.ToList();
                     newForm.DataSource = form.DataSource;
                     newForm.DisableDefaultStylesheet = form.DisableDefaultStylesheet;
@@ -71,7 +70,7 @@ namespace PerplexUmbraco.Forms.Controllers
 
                         // Create copies of the workflows
                         foreach(var workflow in workflows){
-                            var newWorkflow = new Workflow();
+                            var newWorkflow = new Umbraco.Forms.Core.Workflow();
                             newWorkflow.Active = workflow.Active;
                             newWorkflow.ExecutesOn = workflow.ExecutesOn;
                             newWorkflow.Form = submittedForm.Id;

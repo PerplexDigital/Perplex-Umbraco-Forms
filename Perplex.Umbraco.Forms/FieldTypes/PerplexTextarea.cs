@@ -8,7 +8,7 @@ using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Extensions;
 using Umbraco.Forms.Data;
 
-namespace PerplexUmbraco.Forms.Types
+namespace PerplexUmbraco.Forms.FieldTypes
 {
     public class PerplexTextarea : Umbraco.Forms.Core.FieldType
     {

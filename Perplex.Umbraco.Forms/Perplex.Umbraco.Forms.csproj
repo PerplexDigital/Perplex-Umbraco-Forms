@@ -7,7 +7,7 @@
     <ProjectGuid>{C9840684-BBEC-4BDC-B784-43C8F3F53668}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Perplex.Umbraco.Forms</RootNamespace>
+    <RootNamespace>PerplexUmbraco.Forms</RootNamespace>
     <AssemblyName>Perplex.Umbraco.Forms</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -244,11 +244,12 @@
   <ItemGroup>
     <Compile Include="Controllers\PerplexUmbracoFormController.cs" />
     <Compile Include="MvcApplication.cs" />
-    <Compile Include="PerplexFileUpload.cs" />
-    <Compile Include="PerplexImageUpload.cs" />
-    <Compile Include="PerplexTextarea.cs" />
-    <Compile Include="PerplexTextField.cs" />
+    <Compile Include="FieldTypes\PerplexFileUpload.cs" />
+    <Compile Include="FieldTypes\PerplexImageUpload.cs" />
+    <Compile Include="FieldTypes\PerplexTextarea.cs" />
+    <Compile Include="FieldTypes\PerplexTextField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Workflows\DeleteOnSubmitWorkflow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -277,7 +278,7 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)App_Plugins\*.*" "$(SolutionDir)..\..\UmbracoFormsExtensions\UmbracoFormsExtensions\App_Plugins" /Y /I /E
 xcopy "$(ProjectDir)Views\*.*" "$(SolutionDir)..\..\UmbracoFormsExtensions\UmbracoFormsExtensions\Views" /Y /I /E
-xcopy "$(ProjectDir)\bin\Release\Perplex.Umbraco.Forms*" "$(SolutionDir)..\..\UmbracoFormsExtensions\UmbracoFormsExtensions\bin" /Y /I /E</PostBuildEvent>
+xcopy "$(ProjectDir)\bin\Debug\Perplex.Umbraco.Forms*" "$(SolutionDir)..\..\UmbracoFormsExtensions\UmbracoFormsExtensions\bin" /Y /I /E</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

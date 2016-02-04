@@ -50,7 +50,26 @@ namespace PerplexUmbraco.Forms.Workflows
 
             // Clear the entry data and replace with a "-"
             foreach (var field in e.Record.RecordFields)
-                field.Value.Values = new List<object>() { "-" };
+            {
+                // Determine by datatype which nullable value we should use
+                switch (field.Value.DataType)
+                {
+                    case FieldDataType.Integer:
+                        field.Value.Values = new List<object>() { 0 };
+                        break;
+                    case FieldDataType.DateTime:
+                        field.Value.Values = new List<object>() { new DateTime(1900, 01, 01) }; // cannot use minvalue :/
+                        break;
+                    case FieldDataType.Bit:
+                        field.Value.Values = new List<object>() { false };
+                        break;
+                    case FieldDataType.String:
+                    case FieldDataType.LongString:
+                    default:
+                        field.Value.Values = new List<object>() { "-" };
+                        break;
+                }
+            }
 
             //The re-generate the record data
             e.Record.GenerateRecordDataAsJson();

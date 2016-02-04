@@ -89,7 +89,7 @@ namespace PerplexUmbraco.Forms.FieldTypes
                         postedValues = null;
                         return (IEnumerable<string>)new string[1]
                           {
-                            string.Format(StringExtensions.ParsePlaceHolders(field.Settings.First(x => x.Key == "AllowedFileTypesErrorMessage").Value ?? ""), (object) field.Caption)
+                            string.Format(StringExtensions.ParsePlaceHolders(field.Settings.FirstOrDefault(x => x.Key == "AllowedFileTypesErrorMessage").Value ?? ""), (object) field.Caption)
                           };
                     }
                 }
@@ -112,7 +112,7 @@ namespace PerplexUmbraco.Forms.FieldTypes
                         postedValues = null;
                         return (IEnumerable<string>)new string[1]
                           {
-                            string.Format(StringExtensions.ParsePlaceHolders(field.Settings.First(x => x.Key == "MaximumFileSizeErrorMessage").Value ?? ""), (object) field.Caption)
+                            string.Format(StringExtensions.ParsePlaceHolders(field.Settings.FirstOrDefault(x => x.Key == "MaximumFileSizeErrorMessage").Value ?? ""), (object) field.Caption)
                           };
                     }
 

@@ -1,0 +1,168 @@
+﻿.perplex-move-form ul.folders,
+.perplex-move-folder ul.folders,
+.perplex-umbraco-form-picker ul.folders,
+.perplex-sort ul.folders {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.perplex-move-form ul.folders li,
+.perplex-move-folder ul.folders li,
+.perplex-umbraco-form-picker ul.folders li,
+.perplex-sort ul.folders li {
+  font-size: 16px;
+  line-height: 20px;
+  margin-left: 20px;
+}
+.perplex-move-form ul.folders li.depth-0,
+.perplex-move-folder ul.folders li.depth-0,
+.perplex-umbraco-form-picker ul.folders li.depth-0,
+.perplex-sort ul.folders li.depth-0 {
+  margin-left: 0;
+}
+.perplex-move-form ul.folders li.depth-1,
+.perplex-move-folder ul.folders li.depth-1,
+.perplex-umbraco-form-picker ul.folders li.depth-1,
+.perplex-sort ul.folders li.depth-1 {
+  margin-left: 5px;
+}
+.perplex-move-form ul.folders li.depth-2,
+.perplex-move-folder ul.folders li.depth-2,
+.perplex-umbraco-form-picker ul.folders li.depth-2,
+.perplex-sort ul.folders li.depth-2 {
+  margin-left: 30px;
+}
+.perplex-move-form ul.folders li.depth-3,
+.perplex-move-folder ul.folders li.depth-3,
+.perplex-umbraco-form-picker ul.folders li.depth-3,
+.perplex-sort ul.folders li.depth-3 {
+  margin-left: 55px;
+}
+.perplex-move-form ul.folders li.depth-4,
+.perplex-move-folder ul.folders li.depth-4,
+.perplex-umbraco-form-picker ul.folders li.depth-4,
+.perplex-sort ul.folders li.depth-4 {
+  margin-left: 80px;
+}
+.perplex-move-form ul.folders li.depth-5,
+.perplex-move-folder ul.folders li.depth-5,
+.perplex-umbraco-form-picker ul.folders li.depth-5,
+.perplex-sort ul.folders li.depth-5 {
+  margin-left: 105px;
+}
+.perplex-move-form ul.folders li.depth-6,
+.perplex-move-folder ul.folders li.depth-6,
+.perplex-umbraco-form-picker ul.folders li.depth-6,
+.perplex-sort ul.folders li.depth-6 {
+  margin-left: 130px;
+}
+.perplex-move-form ul.folders li.depth-7,
+.perplex-move-folder ul.folders li.depth-7,
+.perplex-umbraco-form-picker ul.folders li.depth-7,
+.perplex-sort ul.folders li.depth-7 {
+  margin-left: 155px;
+}
+.perplex-move-form ul.folders li.depth-8,
+.perplex-move-folder ul.folders li.depth-8,
+.perplex-umbraco-form-picker ul.folders li.depth-8,
+.perplex-sort ul.folders li.depth-8 {
+  margin-left: 180px;
+}
+.perplex-move-form ul.folders li.depth-9,
+.perplex-move-folder ul.folders li.depth-9,
+.perplex-umbraco-form-picker ul.folders li.depth-9,
+.perplex-sort ul.folders li.depth-9 {
+  margin-left: 205px;
+}
+.perplex-move-form ul.folders li .angled-line,
+.perplex-move-folder ul.folders li .angled-line,
+.perplex-umbraco-form-picker ul.folders li .angled-line,
+.perplex-sort ul.folders li .angled-line {
+  font-size: 15px;
+  vertical-align: super;
+}
+.perplex-move-form ul.folders li i.icon,
+.perplex-move-folder ul.folders li i.icon,
+.perplex-umbraco-form-picker ul.folders li i.icon,
+.perplex-sort ul.folders li i.icon {
+  margin-right: 10px;
+}
+.perplex-move-form ul.folders li,
+.perplex-move-folder ul.folders li,
+.perplex-sort ul.folders li {
+  padding: 3px 5px 6px 5px;
+}
+.perplex-move-form ul.folders li.active,
+.perplex-move-folder ul.folders li.active,
+.perplex-sort ul.folders li.active,
+.perplex-move-form ul.folders li.active:hover,
+.perplex-move-folder ul.folders li.active:hover,
+.perplex-sort ul.folders li.active:hover {
+  background-color: #2e8aea;
+  color: white;
+}
+.perplex-move-form ul.folders li:hover,
+.perplex-move-folder ul.folders li:hover,
+.perplex-sort ul.folders li:hover {
+  cursor: pointer;
+  background-color: #f8f8f8;
+}
+.perplex-sort ul.folders li {
+  margin-left: 0;
+}
+.perplex-sort h4.bold {
+  font-weight: bold;
+}
+.perplex-folder input[type="text"] {
+  font-size: 20px;
+  height: 25px;
+}
+.perplex-umbraco-form-picker {
+  /* Clear button */
+}
+.perplex-umbraco-form-picker .clear {
+  margin-top: 20px;
+}
+.perplex-umbraco-form-picker .clear a:hover {
+  cursor: pointer;
+}
+.perplex-umbraco-form-picker ul.folders li {
+  font-size: 14px;
+  margin-left: 25px !important;
+}
+.perplex-umbraco-form-picker ul.folders li.depth-1 {
+  margin-left: 5px !important;
+}
+.perplex-umbraco-form-picker ul.folders li .folder {
+  padding: 5px 5px 5px 0;
+}
+.perplex-umbraco-form-picker ul.folders li .folder ins {
+  margin-left: -18px;
+}
+.perplex-umbraco-form-picker ul.folders li .folder:hover {
+  cursor: pointer;
+  background-color: #f8f8f8;
+}
+.perplex-umbraco-form-picker ul.folders li .form {
+  margin-left: 20px;
+}
+.perplex-umbraco-form-picker .form {
+  padding: 5px;
+  font-size: 14px;
+}
+.perplex-umbraco-form-picker .form i.icon {
+  margin-right: 10px;
+}
+.perplex-umbraco-form-picker .form.selected,
+.perplex-umbraco-form-picker .form:hover {
+  background-color: #2e8aea;
+  color: white;
+  cursor: pointer;
+}
+.perplex-create-folder .folder-name {
+  padding: 5px 10px;
+}
+.perplex-delete-folder .umb-pane p input[type="checkbox"] {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}

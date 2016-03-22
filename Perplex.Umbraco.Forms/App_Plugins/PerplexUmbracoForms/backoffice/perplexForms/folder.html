@@ -1,0 +1,52 @@
+﻿<div ng-controller="Perplex.Form.FolderController" class="perplex-folder">
+    <form novalidate ng-submit="update()">
+
+        <div class="umb-panel-header">
+            <div class="row-fluid">
+                <div>
+                    <div class="span7">
+                        <div class="umb-headline-editor-wrapper">
+                            <input type="text" localize="placeholder" class="umb-headline" placeholder="Enter a name..." ng-model="folder.name" style="border: 1px solid rgba(175, 175, 175, 0.196078); background-color: rgba(255, 255, 255, 0.196078);">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="umb-panel-body umb-scrollable row-fluid">
+            <div class="umb-pane perplex-sort perplex-folder">
+                <p ng-if="folder && (folder.folder.length > 0 || folder.forms.length > 0)">
+                    <h4>Reorder folders and forms using drag &amp; drop</h4>
+                    <hr />
+                </p>
+
+                <div ng-if="folder && folder.folders.length > 0">
+                    <h4 class="bold">Folders</h4>
+                    <ul class="folders" ui-sortable ng-model="folder.folders">
+                        <li ng-repeat="folder in folder.folders">
+                            <i class="icon umb-tree-icon sprTree icon-folder-close"></i><a href="#/forms/perplexForms/folder/{{ folder.id }}">{{ folder.name }}</a>
+                        </li>
+                    </ul>
+                </div>
+                <br />
+
+                <div ng-if="folder && folder.forms.length > 0">
+                    <h4 class="bold">Forms</h4>
+                    <ul class="folders" ui-sortable ng-model="folder.forms">
+                        <li ng-repeat="form in folder.forms">
+                            <i class="icon umb-tree-icon sprTree icon-autofill"></i><a href="#/forms/form/edit/{{ getFormId(form) }}">{{ getFormName(form) }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="umb-tab-buttons" style="padding-left: 15px;">
+                <div class="btn-group">
+                    <button data-hotkey="ctrl+s" class="btn btn-success">
+                        <localize key="buttons_save" class="ng-isolate-scope ng-scope">Save</localize>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,146 @@
+﻿.perplex-move-form, .perplex-move-folder, .perplex-umbraco-form-picker, .perplex-sort {
+    ul.folders {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            font-size: 16px;
+            line-height: 20px;            
+            margin-left: 20px;
+
+            &.depth-0 { margin-left: 0; }
+            &.depth-1 { .depth(1) }
+            &.depth-2 { .depth(2) }
+            &.depth-3 { .depth(3) }
+            &.depth-4 { .depth(4) }
+            &.depth-5 { .depth(5) }
+            &.depth-6 { .depth(6) }
+            &.depth-7 { .depth(7) }
+            &.depth-8 { .depth(8) }
+            &.depth-9 { .depth(9) }
+             
+            .depth(@n) { margin-left: 5px + 25px * @n - 25px; }
+
+            .angled-line {
+                font-size: 15px;
+                vertical-align: super;
+            }
+
+            i.icon {
+                margin-right: 10px;
+            }
+        }
+    }
+}
+
+.perplex-move-form, .perplex-move-folder, .perplex-sort {
+    ul.folders {
+        li {
+            padding: 3px 5px 6px 5px;
+
+            &.active, &.active:hover {
+                background-color: #2e8aea;
+                color: white;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: #f8f8f8;                
+            }
+        }
+    }
+}
+
+.perplex-sort {
+    ul.folders {
+        li {
+            margin-left: 0;
+        }
+    }
+
+    h4.bold {
+        font-weight: bold;
+    }
+}
+
+.perplex-folder {
+    input[type="text"] {
+        font-size: 20px;
+        height: 25px;
+    }
+}
+
+.perplex-umbraco-form-picker {
+    /* Clear button */
+    .clear {
+        margin-top: 20px;
+
+        a {     
+            &:hover { cursor: pointer; }
+        }
+    }
+
+    
+
+    ul.folders {
+        li {
+            font-size: 14px;
+
+            margin-left: 25px !important;
+
+            &.depth-1 {
+                margin-left: 5px !important;
+            }
+            
+            .folder {
+                padding: 5px 5px 5px 0;                
+
+                ins {
+                    margin-left: -18px;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: #f8f8f8;                
+                }
+            }
+
+            .form {
+                margin-left: 20px;
+            }
+        }
+    }
+
+     .form {        
+        padding: 5px;
+        font-size: 14px;
+                
+        i.icon {
+            margin-right: 10px;
+        }
+
+        &.selected, &:hover {
+            background-color: #2e8aea;
+            color: white;
+            cursor: pointer;
+        }
+    }          
+}
+
+.perplex-create-folder {
+    .folder-name {
+        padding: 5px 10px; 
+    }
+}
+
+.perplex-delete-folder {
+    .umb-pane {
+        p {
+            input[type="checkbox"] {
+                margin-right: 5px;
+                margin-bottom: 5px;
+            }
+        }
+    }
+}

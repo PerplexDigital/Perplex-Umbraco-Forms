@@ -1,0 +1,32 @@
+﻿<script type="text/ng-template" id="folder.html">    
+    <div ng-show="showFolder(folder)">
+        <div class="folder" ng-click="toggleFolder(folder)">
+            <ins ng-if="folder.folders.length > 0 || folder.forms.length > 0" ng-class="{'icon-navigation-right': !folder.expanded, 'icon-navigation-down': folder.expanded}"></ins>
+            <i class="icon umb-tree-icon sprTree icon-folder-close"></i>{{ folder.name }}
+        </div>
+
+        <ul ng-if="folder.folders.length > 0" class="folders">
+            <li ng-repeat="folder in folder.folders" ng-include="'folder.html'" class="depth-{{ folder.path.length - 1 }}" />
+        </ul>
+
+        <div ng-show="folder.expanded" class="form" ng-class="{ selected: form.id == model.value }" ng-repeat="form in folder.forms" ng-click="selectForm(form)">
+            <i class="icon umb-tree-icon sprTree icon-autofill"></i>{{ form.name }}
+        </div>
+    </div>
+</script>
+
+ <div ng-controller="Perplex.UmbracoFormPickerController" class="perplex-umbraco-form-picker">
+     <div ng-if="!loading">
+         <ul ng-if="folders && folders.length > 0" class="folders">
+             <li ng-repeat="folder in folders" ng-include="'folder.html'" class="depth-{{ folder.path.length - 1 }}" />
+         </ul>
+
+         <div class="form" ng-class="{ selected: form.id == model.value }" ng-repeat="form in forms" ng-click="selectForm(form)">
+             <i class="icon umb-tree-icon sprTree icon-autofill"></i>{{ form.name }}
+         </div>
+
+         <div class="clear">
+             <a ng-click="clear()" ng-show="model.value">Clear</a>
+         </div>
+     </div>
+ </div>

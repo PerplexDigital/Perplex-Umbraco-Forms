@@ -1,0 +1,14 @@
+﻿<div class="umb-pane perplex-create-folder" ng-controller="Perplex.Form.CreateFolderController">
+    <form novalidate ng-submit="createFolder(currentNode.id, folderName)">        
+        <input autofocus ng-model="folderName" placeholder="Folder name" class="folder-name" />        
+
+        <div>
+            <div class="umb-pane btn-toolbar umb-btn-toolbar">
+                <div class="control-group umb-control-group">
+                    <a href="" class="btn btn-link" ng-click="cancelCreateFolder()"><localize key="general_cancel">Cancel</localize></a>
+                    <button class="btn btn-primary"><localize key="general_ok">OK</localize></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

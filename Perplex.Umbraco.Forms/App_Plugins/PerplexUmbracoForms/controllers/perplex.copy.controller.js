@@ -1,11 +1,21 @@
 ﻿angular.module("umbraco").controller("Perplex.Form.CopyController",
-	function ($scope, perplexFormResource, navigationService, treeService) {
+	function ($scope, perplexFormResource, navigationService) {
 	    $scope.copy = function (id) {
-	        
-	        perplexFormResource.copyByGuid(id).then(function () {
-	            // Reload the tree by passing the parent path
-	            navigationService.syncTree({ tree: "form", path: [String($scope.currentNode.parent().path)], forceReload: true });
-                // Hide the tree
+
+	        perplexFormResource.copyByGuid(id).then(function(response) {
+	            // The response contains the parent folder of the form
+	            var folder = response.data;
+
+	            // We want to expand to the last form of the folder, 
+	            // which is the form we just added
+	            var formId = folder.forms[folder.forms.length - 1];
+
+	            var path = folder.path.concat([formId]);
+
+	            // Refresh the folder
+	            navigationService.syncTree({ tree: "form", path: path, forceReload: true });
+
+	            // Hide menu
 	            navigationService.hideNavigation();
 	        });
 
@@ -14,16 +24,3 @@
 	        navigationService.hideNavigation();
 	    };
 	});
-
-function perplexFormResource($http) {
-    //the factory object returned
-    var apiRoot = "backoffice/api/PerplexUmbracoForm/";
-
-    return {
-        copyByGuid: function (id) {
-            return $http.post(apiRoot + "CopyByGuid?guid=" + id);
-        },
-    };
-}
-
-angular.module('umbraco.resources').factory('perplexFormResource', perplexFormResource);

@@ -242,6 +242,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\PerplexFolder.cs" />
+    <Compile Include="Controllers\PerplexFormTreeController.cs" />
     <Compile Include="Controllers\PerplexUmbracoFormController.cs" />
     <Compile Include="MvcApplication.cs" />
     <Compile Include="FieldTypes\PerplexFileUpload.cs" />
@@ -253,6 +255,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="App_Plugins\PerplexUmbracoForms\css\style.less" />
+    <None Include="App_Plugins\PerplexUmbracoForms\data\folders.json" />
     <None Include="App_Plugins\PerplexUmbracoForms\package.manifest" />
     <None Include="packages.config" />
     <None Include="Views\Partials\Forms\Fieldtypes\FieldType.PerplexFileUpload.cshtml" />
@@ -261,14 +265,30 @@
     <None Include="Views\Partials\Forms\Fieldtypes\FieldType.PerplexTextField.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\perplexForms\folder.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.copy.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.createfolder.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.deletefolder.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.movefolder.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.moveform.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.umbracoformpicker.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\css\style.css">
+      <DependentUpon>style.less</DependentUpon>
+    </Content>
+    <Content Include="App_Plugins\PerplexUmbracoForms\propertyeditors\formpicker.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\resources\perplexFormResource.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\views\copyForm.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\views\createFolder.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\views\deleteFolder.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\views\moveFolder.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\views\moveForm.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\views\sort.html" />
     <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\FieldTypes\PerplexFileUpload.html" />
     <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\FieldTypes\PerplexImageUpload.html" />
     <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\FieldTypes\Perplextextarea.html" />
     <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\FieldTypes\Perplextextfield.html" />
     <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\SettingTypes\perplexcheckboxlist.controller.js" />
     <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\SettingTypes\perplexcheckboxlist.html" />
-    <Content Include="App_Plugins\UmbracoForms\Backoffice\Form\copyForm.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

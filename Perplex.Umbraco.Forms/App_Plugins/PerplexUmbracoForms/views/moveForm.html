@@ -1,0 +1,19 @@
+﻿<div class="umb-pane perplex-move-form" ng-controller="Perplex.Form.MoveFormController">
+    <p>
+        <ul ng-if="folders && folders.length > 0" class="folders">
+            <li ng-repeat="folder in folders" ng-click="selectFolder(folder)" ng-class="{ active: folder.id == folderId }" class="depth-{{ folder.depth }}">
+                <span class="angled-line" ng-if="folder.depth > 0">∟</span>                    
+                <i class="icon umb-tree-icon sprTree icon-folder-close"></i>{{ folder.name }}
+            </li>
+        </ul>
+    </p>
+
+    <div>
+        <div class="umb-pane btn-toolbar umb-btn-toolbar">
+            <div class="control-group umb-control-group">
+                <a href="" class="btn btn-link" ng-click="cancelMoveForm()"><localize key="general_cancel">Cancel</localize></a>
+                <a href="" class="btn btn-primary" ng-click="moveForm(currentNode.id, folderId)"><localize key="general_ok">OK</localize></a>
+            </div>
+        </div>
+    </div>
+</div>

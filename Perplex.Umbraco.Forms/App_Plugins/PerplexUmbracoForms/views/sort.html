@@ -1,0 +1,34 @@
+﻿<div class="umb-pane perplex-sort" ng-controller="Perplex.Form.SortController">
+    <p ng-if="folder && (folder.folder.length > 0 || folder.forms.length > 0)">
+        <h4>Reorder folders and forms using drag &amp; drop</h4>
+        <hr />
+    </p>
+
+    <div ng-if="folder && folder.folders.length > 0">
+        <h4 class="bold">Folders</h4>
+        <ul class="folders" ui-sortable ng-model="folder.folders">
+            <li ng-repeat="folder in folder.folders">
+                <i class="icon umb-tree-icon sprTree icon-folder-close"></i>{{ folder.name }}
+            </li>
+        </ul>
+        <br />
+    </div>
+
+    <div ng-if="folder && folder.forms.length > 0">
+        <h4 class="bold">Forms</h4>
+        <ul class="folders" ui-sortable ng-model="folder.forms">
+            <li ng-repeat="form in folder.forms">
+                <i class="icon umb-tree-icon sprTree icon-autofill"></i>{{ getFormName(form) }}
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <div class="umb-pane btn-toolbar umb-btn-toolbar">
+            <div class="control-group umb-control-group">
+                <a href="" class="btn btn-link" ng-click="cancelSort()"><localize key="general_cancel">Cancel</localize></a>
+                <a href="" class="btn btn-primary" ng-click="sort()"><localize key="general_ok">OK</localize></a>
+            </div>
+        </div>
+    </div>
+</div>

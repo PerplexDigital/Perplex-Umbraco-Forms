@@ -1,4 +1,4 @@
-﻿function perplexFormResource($http) {    
+﻿function perplexFormResource($http) {
     var apiRoot = "backoffice/api/PerplexUmbracoForm/";
 
     return {
@@ -6,33 +6,49 @@
             return $http.post(apiRoot + "CopyByGuid?guid=" + id);
         },
 
-		createFolder: function(parentId, name) {
-			return $http.post(apiRoot + "CreateFolder?parentId=" + parentId + "&name=" + name);
-		},
+			createFolder: function(parentId, name) {
+				return $http.post(apiRoot + "CreateFolder?parentId=" + parentId + "&name=" + name);
+			},
 
-		moveForm: function (formId, folderId) {
-		    return $http.post(apiRoot + "MoveForm?formId=" + formId + "&folderId=" + folderId);
-		},
+			moveForm: function (formId, folderId) {
+					return $http.post(apiRoot + "MoveForm?formId=" + formId + "&folderId=" + folderId);
+			},
 
-		moveFolder: function (id, folderId) {
-		    return $http.post(apiRoot + "MoveFolder?id=" + id + "&folderId=" + folderId);
-		},
+			moveFolder: function (id, folderId) {
+					return $http.post(apiRoot + "MoveFolder?id=" + id + "&folderId=" + folderId);
+			},
 
-		update: function(folder) {
-		    return $http.post(apiRoot + "Update", folder);
-		},
+			update: function(folder) {
+					return $http.post(apiRoot + "Update", folder);
+			},
 
-		getFolder: function(folderId) {
-		    return $http.get(apiRoot + "GetFolder?folderId=" + folderId);
-		},
-        
-		getRootFolder: function () {
-		    return $http.get(apiRoot + "GetRootFolder");
-		},
+			getFolder: function(folderId) {
+					return $http.get(apiRoot + "GetFolder?folderId=" + folderId);
+			},
 
-		deleteFolder: function (folderId, deleteForms) {
-		    return $http.post(apiRoot + "DeleteFolder?folderId=" + folderId + "&deleteForms=" + deleteForms);
-		}
+			getRootFolder: function () {
+					return $http.get(apiRoot + "GetRootFolder");
+			},
+
+			deleteFolder: function (folderId, deleteForms) {
+					return $http.post(apiRoot + "DeleteFolder?folderId=" + folderId + "&deleteForms=" + deleteForms);
+			},
+
+			setFormStartNodes: function (userId, folderIds) {
+					return $http.post(apiRoot + "SetFormStartNodes?userId=" + userId + "&folderIds=" + folderIds.join(','));
+			},
+
+			getFormStartNodes: function (userId) {
+					return $http.get(apiRoot + "GetFormStartNodes?userId=" + userId);
+			},
+
+			getFormFolder: function (formId) {
+					return $http.get(apiRoot + "GetFormFolder?formId=" + formId);
+			},
+
+			getFormsRootNode: function () {
+					return $http.get(apiRoot + "GetFormsRootNode")
+			}
     };
 }
 

@@ -6,10 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
 using Umbraco.Core.IO;
 using Umbraco.Forms.Core.Providers;
+using Umbraco.Forms.Data;
 using Umbraco.Forms.Data.Storage;
 using Umbraco.Forms.Mvc.Models.Backoffice;
 using Umbraco.Forms.Web.Models.Backoffice;
@@ -92,10 +94,10 @@ namespace PerplexUmbraco.Forms.Controllers
                         }
 
                         // Put the form in the same folder as the original
-                        var folder = PerplexFolder.Get(f => f.forms.Any(formId => formId == guid.ToString()));
+                        var folder = PerplexFolder.Get(f => f.Forms.Any(formId => formId == guid.ToString()));
                         if (folder != null)
                         {
-                            folder.forms.Add(newForm.Id.ToString());
+                            folder.Forms.Add(newForm.Id.ToString());
                             PerplexFolder.SaveAll();
 
                             // Return the folder so we can expand the tree again
@@ -120,13 +122,13 @@ namespace PerplexUmbraco.Forms.Controllers
             // Add folder
             var folder = new PerplexFolder
             {
-                id = Guid.NewGuid().ToString(),
-                parentId = parentId,
+                Id = Guid.NewGuid().ToString(),
+                ParentId = parentId,
                 // Do not allow a name as null, transform that to empty string instead (UI related, would display as "null" otherwise).
                 // If users want an empty folder name, so be it, so we are not going to prevent them from inputting an empty name.
-                name = name == null ? "" : name,
-                forms = new List<string>(),
-                folders = new List<PerplexFolder>()
+                Name = name == null ? "" : name,
+                Forms = new List<string>(),
+                Folders = new List<PerplexFolder>()
             };
 
             PerplexFolder.Add(folder, parentId);
@@ -138,10 +140,16 @@ namespace PerplexUmbraco.Forms.Controllers
         public HttpResponseMessage Update(PerplexFolder folder)
         {
             // Update the folder
-            var folderToUpdate = PerplexFolder.Get(folder.id);
+            var folderToUpdate = PerplexFolder.Get(folder.Id);
             if(folderToUpdate == null)
             {
-                return new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "Folder with id " + folder.id + " not found" };
+                return new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "Folder with id " + folder.Id + " not found" };
+            }
+
+            // If this folder is disabled, it means the user does not have access so it cannot be updated either
+            if (folderToUpdate.Disabled)
+            {
+                return new HttpResponseMessage(HttpStatusCode.Unauthorized) { ReasonPhrase = "Insufficient permission to update folder " + folder.Name };
             }
 
             folderToUpdate.Update(folder);
@@ -159,14 +167,14 @@ namespace PerplexUmbraco.Forms.Controllers
 
             // If form was contained in another folder (should be the case),
             // remove it from there
-            var oldFolder = PerplexFolder.Get(f => f.forms.Any(ff => ff == formId));
+            var oldFolder = PerplexFolder.Get(f => f.Forms.Any(ff => ff == formId));
             if (oldFolder != null)
             {
-                oldFolder.forms.Remove(formId);
+                oldFolder.Forms.Remove(formId);
             }
 
             // Add form to new folder
-            newFolder.forms.Add(formId);
+            newFolder.Forms.Add(formId);
 
             // Save to disk
             PerplexFolder.SaveAll();
@@ -202,9 +210,19 @@ namespace PerplexUmbraco.Forms.Controllers
         }
 
         [HttpGet]
-        public PerplexFolder GetFolder(string folderId)
+        public HttpResponseMessage GetFolder(string folderId)
         {
-            return PerplexFolder.Get(folderId);
+            // This method is used to render the folder overview page
+            // If the folder is disabled, this page should not be rendered
+            // at all.
+            var folder = PerplexFolder.Get(folderId);
+
+            if (folder == null)
+            {
+                return new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "Folder with id " + folderId + " not found" };
+            }
+
+            return Request.CreateResponse<PerplexFolder>(HttpStatusCode.OK, folder);
         }
 
         /// <summary>
@@ -228,8 +246,8 @@ namespace PerplexUmbraco.Forms.Controllers
             {
                 using (FormStorage formStorage = new FormStorage())
                 {
-                    var formIds = new List<string>(folder.forms);
-                    formIds.AddRange(folder.GetDescendantFolders().SelectMany(f => f.forms));
+                    var formIds = new List<string>(folder.Forms);
+                    formIds.AddRange(folder.GetDescendantFolders().SelectMany(f => f.Forms));
 
                     // Forms of this folder
                     foreach (string formId in formIds)
@@ -256,6 +274,83 @@ namespace PerplexUmbraco.Forms.Controllers
 
             // Respond with the parent folder, so we can refresh it
             return Request.CreateResponse(HttpStatusCode.OK, parentFolder);
+        }
+
+        /// <summary>
+        /// Sets the start nodes in Forms for a user
+        /// </summary>
+        /// <param name="userId">The Umbraco User ID</param>
+        /// <param name="folderIds">List of folder IDs (comma separated) the user has access to</param>
+        /// <returns></returns>
+        [HttpPost]
+        public HttpResponseMessage SetFormStartNodes(int userId, string folderIds)
+        {
+            var user = Services.UserService.GetUserById(userId);
+            if (user == null)
+            {
+                return new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "User with id " + userId + " not found" };
+            }
+
+            // We use Umbraco Forms' standard SQL Helper
+            var sqlHelper = Helper.SqlHelper;
+
+            // Remove any existing start folders
+            try { sqlHelper.ExecuteNonQuery("DELETE FROM [perplexUmbracoUser] WHERE userId = @userId", sqlHelper.CreateParameter("@userId", user.Id)); }
+            catch (Exception) { }            
+
+            if (folderIds != null)
+            {
+                // Add new ones
+                foreach (var folderId in folderIds.Split(','))
+                {
+                    try
+                    {
+                        sqlHelper.ExecuteNonQuery(
+                            "INSERT INTO [perplexUmbracoUser](userId, formsStartNode) VALUES (@userId, @folderId)",
+                            sqlHelper.CreateParameter("@userId", userId),
+                            sqlHelper.CreateParameter("@folderId", folderId)
+                        );
+                    }
+                    catch (Exception) { }                    
+                }
+            }
+            
+            // Clear cached start folders
+            string cacheKey = "_Perplex_StartFolders_" + user.Id;
+            HttpContext.Current.Cache.Remove(cacheKey);
+
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+
+        [HttpGet]
+        public HttpResponseMessage GetFormStartNodes(int userId)
+        {
+            var user = Services.UserService.GetUserById(userId);
+            if (user == null)
+            {
+                return new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "User with id " + userId + " not found" };
+            }
+
+            return Request.CreateResponse(
+                HttpStatusCode.OK, 
+                PerplexFolder.GetStartFoldersForUser(user)
+            );        
+        }
+
+        [HttpGet]
+        public HttpResponseMessage GetFormFolder(string formId)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, PerplexFolder.GetAll().FirstOrDefault(f => f.Forms.Any(fId => fId == formId)));
+        }
+
+        [HttpGet]
+        public HttpResponseMessage GetFormsRootNode()
+        {
+            List<PerplexFolder> startFolders = PerplexFolder.GetStartFoldersForCurrentUser();
+
+            return Request.CreateResponse(HttpStatusCode.OK, startFolders.Any()
+                ? PerplexFolder.GetCommonAncestor(startFolders)
+                : PerplexFolder.GetRootFolder());
         }
     }
 }

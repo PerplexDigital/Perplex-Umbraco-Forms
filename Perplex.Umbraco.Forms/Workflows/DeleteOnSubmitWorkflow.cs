@@ -118,7 +118,7 @@ namespace PerplexUmbraco.Forms.Workflows
                     Debug.WriteLine(ex.Message);
 #endif
                     // Keep trying untill you succeed
-                    await Task.Run(() => DeleteFilesWithDelay(new List<string> { file }));
+                    Task.Run(() => DeleteFilesWithDelay(new List<string> { file }));
                 }
             }
         }

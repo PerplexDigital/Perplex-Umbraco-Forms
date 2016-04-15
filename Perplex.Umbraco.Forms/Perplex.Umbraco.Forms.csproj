@@ -242,6 +242,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\Constants.cs" />
     <Compile Include="Code\PerplexFolder.cs" />
     <Compile Include="Controllers\PerplexFormTreeController.cs" />
     <Compile Include="Controllers\PerplexUmbracoFormController.cs" />
@@ -255,6 +256,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="App_Plugins\PerplexUmbracoForms\css\style.css.map">
+      <DependentUpon>style.css</DependentUpon>
+    </None>
     <None Include="App_Plugins\PerplexUmbracoForms\css\style.less" />
     <None Include="App_Plugins\PerplexUmbracoForms\data\folders.json" />
     <None Include="App_Plugins\PerplexUmbracoForms\package.manifest" />
@@ -265,21 +269,29 @@
     <None Include="Views\Partials\Forms\Fieldtypes\FieldType.PerplexTextField.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\formsecurity\edit.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\perplexForms\folder.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.routing.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.formssecurity.edit.controller.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.copy.controller.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.createfolder.controller.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.deletefolder.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.folder.controller.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.movefolder.controller.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.moveform.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.navigationservice.decorator.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.sort.controller.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.umbracoformpicker.controller.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\css\style.css">
       <DependentUpon>style.less</DependentUpon>
     </Content>
+    <Content Include="App_Plugins\PerplexUmbracoForms\directives\perplex-forms-start-nodes.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\propertyeditors\formpicker.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\resources\perplexFormResource.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\copyForm.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\createFolder.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\deleteFolder.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\views\formsStartNodes.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\moveFolder.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\moveForm.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\sort.html" />

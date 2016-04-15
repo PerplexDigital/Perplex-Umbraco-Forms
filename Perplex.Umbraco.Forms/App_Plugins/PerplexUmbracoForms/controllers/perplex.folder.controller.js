@@ -15,14 +15,15 @@
                 $scope.folder = response.data;
 
                 // Goto folder in tree 	    
-                navigationService.syncTree({ tree: "form", path: $scope.folder.path, forceReload: false, activate: true });
+                navigationService.syncTree({ tree: "form", path: $scope.folder.relativePath, forceReload: false, activate: true });
+                
             }, function (error) { });
         });
 
 	    $scope.update = function () {
 	        perplexFormResource.update($scope.folder).then(function (response) {
 	            // Reload folder
-	            navigationService.syncTree({ tree: "form", path: $scope.folder.path, forceReload: true }).then(function (syncArgs) {
+	            navigationService.syncTree({ tree: "form", path: $scope.folder.relativePath, forceReload: true }).then(function (syncArgs) {
 	                navigationService.reloadNode(syncArgs.node);
 
 	                // Hide the tree

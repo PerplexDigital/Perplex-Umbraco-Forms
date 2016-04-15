@@ -10,6 +10,34 @@
 	            // Add all folders to the flat list,
 	            // except the folder we are going to move                
 	            addFolder(rootFolder);
+
+	            // Since we added start folders, we have to tweak this list a bit more
+	            var enabledFolders = _.filter($scope.folders, { disabled: false });
+
+	            // Find common ancestor
+	            var folderPaths = _.pluck(enabledFolders, 'path');
+
+	            var commonAncestors = _.intersection.apply(this, folderPaths);
+
+	            // Grab the last one (deepest in tree)
+	            var commonAncestor = commonAncestors[commonAncestors.length - 1];
+
+	            // Since the Start Nodes were introduced, respect them
+	            // Filter out all disabled folders, but keep the common ancestor (which is disabled itself usually),
+	            // and any node between the common ancestor and a node which is not disabled
+	            $scope.folders = _.filter($scope.folders, function (folder) {
+	                return !folder.disabled || folder.id === commonAncestor ||
+                        (folder.path.indexOf(commonAncestor) > -1 && _.any(enabledFolders, function (f) { return f.path.indexOf(folder.id) > -1; }));
+	            });
+
+	            // Fix depth
+	            var minDepthFolder = _.min($scope.folders, 'depth');
+	            var minDepth = minDepthFolder.depth;
+
+	            $scope.folders = _.map($scope.folders, function (folder) {
+	                folder.depth = folder.depth - minDepth;
+	                return folder;
+	            });
 	        }
 	    }, function (error) {});
 
@@ -37,7 +65,7 @@
 	            treeService.removeNode($scope.currentNode);
 
 	            // Activate the form in its new location
-	            navigationService.syncTree({ tree: "form", path: movedFolder.path, forceReload: false, activate: true });
+	            navigationService.syncTree({ tree: "form", path: movedFolder.relativePath, forceReload: false, activate: true });
 
 	            // Hide menu
 	            navigationService.hideNavigation();
@@ -46,6 +74,9 @@
 	    };
 
 	    $scope.selectFolder = function (folder) {
+            // Can't select disabled folders, sorry
+	        if (folder.disabled) return;
+
 	        $scope.folderId = folder.id;
 	    };
 

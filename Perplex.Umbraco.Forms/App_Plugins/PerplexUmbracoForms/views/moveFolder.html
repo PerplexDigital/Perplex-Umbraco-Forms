@@ -1,8 +1,8 @@
 ﻿<div class="umb-pane perplex-move-folder" ng-controller="Perplex.Form.MoveFolderController">
     <p>
         <ul ng-if="folders && folders.length > 0" class="folders">
-            <li ng-repeat="folder in folders" ng-click="selectFolder(folder)" ng-class="{ active: folder.id == folderId }" class="depth-{{ folder.depth }}">
-                <span class="angled-line" ng-if="folder.depth > 0">∟</span>                    
+            <li ng-repeat="folder in folders" ng-click="!folder.disabled && selectFolder(folder)" ng-class="{ active: folder.id == folderId, disabled: folder.disabled }" class="depth-{{ folder.depth }}">
+                <span class="angled-line" ng-if="folder.depth > 0">∟</span>
                 <i class="icon umb-tree-icon sprTree icon-folder-close"></i>{{ folder.name }}
             </li>
         </ul>

@@ -5,38 +5,121 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Hosting;
 using Umbraco.Core;
+using Umbraco.Core.Models.Membership;
+using Umbraco.Forms.Data;
+using Umbraco.Web;
 
 namespace PerplexUmbraco.Forms.Code
 {
     public class PerplexFolder
     {
         private const string FOLDER_JSON_PATH = "~/App_Plugins/PerplexUmbracoForms/data/folders.json";
+        
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
 
-        public string id { get; set; }
-        public string parentId { get; set; }
-        public string name { get; set; }
-        public List<string> forms { get; set; }
-        public List<PerplexFolder> folders { get; set; }
+        [JsonProperty(PropertyName = "parentId")]
+        public string ParentId { get; set; }
+
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+
+        [JsonProperty(PropertyName = "forms")]
+        public List<string> Forms { get; set; }
+
+        [JsonProperty(PropertyName = "folders")]
+        public List<PerplexFolder> Folders { get; set; }
 
         /// <summary>
         /// The path of this folder in the tree.
         /// A list of IDs starting at the root to this folder (inclusive)
         /// </summary>
         /// <returns></returns>
-        public List<string> path
+        [JsonProperty(PropertyName = "path")]
+        public List<string> Path
         {
             get
             {
+                // A deserialize triggers this property too, 
+                // but when we are *in* the deserialization process
+                // this cannot succeed since rootFolder isn't set yet
+                // This can be fixed with another ContractResolver (to just skip these dynamic getter-only properties)
+                // which will be implemented later.
+                if (rootFolder == null) return new List<string>();
+
                 var parent = GetParent();
                 // No parent? Cool, we're done
-                if(parent == null) return new List<string>() { id };
+                if(parent == null) return new List<string>() { Id };
 
                 // Add our ID to the parent's path
-                var path = parent.path;
-                path.Add(id);
+                var path = parent.Path;
+                path.Add(Id);
                 return path;
+            }
+        }
+
+        /// <summary>
+        /// The path, but relative to the Forms Root Node.
+        /// This is always a subset of Path
+        /// </summary>
+        [JsonProperty(PropertyName = "relativePath")]
+        public List<string> RelativePath
+        {
+            get
+            {
+                // A deserialize triggers this property too, 
+                // but when we are *in* the deserialization process
+                // this cannot succeed since rootFolder isn't set yet
+                // This can be fixed with another ContractResolver (to just skip these dynamic getter-only properties)
+                // which will be implemented later.
+                if (rootFolder == null) return new List<string>();
+
+                List<PerplexFolder> startFolders = GetStartFoldersForCurrentUser();
+
+                if(!startFolders.Any())
+                {
+                    return Path;
+                }
+
+                var commonAncestor = GetCommonAncestor(startFolders);
+
+                return Path.SkipWhile(fId => fId != commonAncestor.Id).ToList();
+            }
+        }
+
+        /// <summary>
+        /// If the current user does not have access to this folder,
+        /// it will be disabled.
+        /// This property should not actually be serialized to disk
+        /// since it is different per user, but setting [JsonIgnore] will also
+        /// cause the API controllers to not return this property anymore (which makes sense),
+        /// but we do use it for the UI so we will just serialize it anyway.        
+        /// </summary>
+        [JsonProperty(PropertyName = "disabled")]
+        public bool Disabled
+        {
+            get 
+            {
+                // Determine this folder's startfolders
+                var startFolders = GetStartFoldersForCurrentUser();
+
+                // If no start folders are defined, everything is accessible
+                if (!startFolders.Any())
+                    return false;
+
+                // Otherwise, this folder is accessible only if 
+                // it is a startfolder or a subfolder of a startfolder
+                // First check if this folder is a start folder itself
+                if (startFolders.Any(f => f == this))
+                    return false;
+
+                // Then check if this folder is a descendant of the startfolder.
+                // Path contains all ancestors of this folder, so we use that instead of
+                // looking at all descendant folders of the start folders, which is way more inefficient                
+                return !Path.Any(folderId => startFolders.Any(f => f.Id == folderId));
             }
         }
 
@@ -49,34 +132,14 @@ namespace PerplexUmbraco.Forms.Code
         {
             if (rootFolder == null)
             {
-                var treeService = ApplicationContext.Current.Services.ApplicationTreeService;
-                var tree = treeService.GetByAlias("perplexForms");
-                if(tree == null)
-                {
-                    throw new Exception("Perplex Forms Tree not found");
-                }
-
-                // In case of errors we will use this new empty instance
-                rootFolder = new PerplexFolder
-                {
-                    id = "-1",
-                    parentId = null,
-                    name = tree.Title,
-                    folders = new List<PerplexFolder>(),
-                    forms = new List<string>()
-                };
-
                 var jsonFile = GetJsonFilePath();
-
-                // Should we write rootFolder to disk, in case the JSON is corrupt or the file does not exist
-                bool save = true;
 
                 if (File.Exists(jsonFile))
                 {
                     try
                     {
                         string json = File.ReadAllText(jsonFile);
-                        if(!string.IsNullOrEmpty(json))
+                        if (!string.IsNullOrEmpty(json))
                         {
                             PerplexFolder folder = null;
                             try { folder = JsonConvert.DeserializeObject<PerplexFolder>(json); }
@@ -86,19 +149,47 @@ namespace PerplexUmbraco.Forms.Code
                             if (folder != null)
                             {
                                 rootFolder = folder;
-
-                                // All is good, no need to overwrite the file with itself
-                                save = false;
                             }
                         }
                     }
                     catch (Exception) { } // TODO: Handle errors?
                 }
 
-                if(save) SaveAll();
+                // Something went wrong retrieving the rootFolder
+                // Create a new instance and write it to disk
+                if (rootFolder == null)
+                {
+                    rootFolder = CreateNewRoot();
+                    SaveAll();
+                }
             }
 
             return rootFolder;
+        }
+
+        /// <summary>
+        /// Creates a new, empty root folder.
+        /// This can be used when there has not been any data found
+        /// </summary>
+        /// <returns></returns>
+        public static PerplexFolder CreateNewRoot()
+        {
+            var treeService = ApplicationContext.Current.Services.ApplicationTreeService;
+            var tree = treeService.GetByAlias("perplexForms");
+            if (tree == null)
+            {
+                throw new Exception("Perplex Forms Tree not found");
+            }
+
+            // A new, empty root folder
+            return new PerplexFolder
+            {
+                Id = "-1",
+                ParentId = null,
+                Name = tree.Title,
+                Folders = new List<PerplexFolder>(),
+                Forms = new List<string>()
+            };
         }
 
         /// <summary>
@@ -137,8 +228,8 @@ namespace PerplexUmbraco.Forms.Code
 
         public void AddFolder(PerplexFolder folder)
         {
-            folder.parentId = id;
-            folders.Add(folder);
+            folder.ParentId = Id;
+            Folders.Add(folder);
             SaveAll();
         }
 
@@ -150,14 +241,14 @@ namespace PerplexUmbraco.Forms.Code
             if (currentParent == null) return;
 
             // Trying to "move" to the same parent? Nope.
-            if (currentParent.id == newParent.id) return;
+            if (currentParent.Id == newParent.Id) return;
 
             // Remove from current parent
-            currentParent.folders.Remove(this);
+            currentParent.Folders.Remove(this);
 
             // Move to new parent
-            parentId = newParent.id;
-            newParent.folders.Add(this);
+            ParentId = newParent.Id;
+            newParent.Folders.Add(this);
 
             SaveAll();
         }
@@ -168,10 +259,13 @@ namespace PerplexUmbraco.Forms.Code
         /// <param name="folder"></param>
         public void Update(PerplexFolder folder)
         {
-            parentId = folder.parentId;
-            name = folder.name;
-            forms = folder.forms;
-            folders = folder.folders;
+            // Disabled folders cannot be updated
+            if (Disabled) return;
+
+            ParentId = folder.ParentId;
+            Name = folder.Name;
+            Forms = folder.Forms;
+            Folders = folder.Folders;
 
             SaveAll();
         }
@@ -183,7 +277,7 @@ namespace PerplexUmbraco.Forms.Code
         /// <returns></returns>
         public static PerplexFolder Get(string folderId)
         {
-            return GetAll().FirstOrDefault(f => f.id == folderId);
+            return GetAll().FirstOrDefault(f => f.Id == folderId);
         }
 
         /// <summary>
@@ -198,7 +292,7 @@ namespace PerplexUmbraco.Forms.Code
 
         public PerplexFolder GetParent()
         {
-            return Get(parentId);
+            return Get(ParentId);
         }
 
         public static string GetJsonFilePath()
@@ -218,19 +312,19 @@ namespace PerplexUmbraco.Forms.Code
             var parent = GetParent();
             if(parent != null)
             {
-                parent.folders.Remove(this);
+                parent.Folders.Remove(this);
             }
         }
 
         public void RemoveSubFolders()
         {
             // Use a copy of our folders as the original might be modified in the loop (which will throw an exception)
-            foreach (var subfolder in new List<PerplexFolder>(folders))
+            foreach (var subfolder in new List<PerplexFolder>(Folders))
             {
                 subfolder.Remove();
             }
 
-            folders.Clear();
+            Folders.Clear();
         }
 
         /// <summary>
@@ -240,10 +334,10 @@ namespace PerplexUmbraco.Forms.Code
         public List<PerplexFolder> GetDescendantFolders()
         {
             // Start with my own subfolders (copied!)
-            var descendants = new List<PerplexFolder>(folders);
+            var descendants = new List<PerplexFolder>(Folders);
 
             // Add my children's children, recursively
-            foreach (var subFolder in folders)
+            foreach (var subFolder in Folders)
             {
                 descendants.AddRange(subFolder.GetDescendantFolders());
             }
@@ -259,8 +353,94 @@ namespace PerplexUmbraco.Forms.Code
             // It's theoretically possible to trigger this method multiple times before writing of a previous call is finished,
             // triggering an I/O exception when the file is still locked for writing.
             // We ignore that error.
-            try { File.WriteAllText(GetJsonFilePath(), JsonConvert.SerializeObject(GetRootFolder(), Formatting.Indented)); }
+            try { 
+                var filePath = GetJsonFilePath();
+                var directory = System.IO.Path.GetDirectoryName(filePath);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(GetRootFolder(), Formatting.Indented)); }
             catch (IOException) { }
+        }
+
+        /// <summary>
+        /// Returns the first common ancestor of the list of folders
+        /// </summary>
+        /// <param name="folders"></param>
+        /// <returns></returns>
+        public static PerplexFolder GetCommonAncestor(List<PerplexFolder> folders)
+        {
+            if (!folders.Any()) 
+                return null;
+
+            // The common ancestor is found by simply taking the intersection of all folder paths
+            // If the resulting list contains more than 1 folder, we take the last one (= deepest in the tree).
+            var folderPaths = folders.Select(folder => folder.Path);
+
+            // This list will always be at least of length 1, as all folders share at least the root folder.
+            var commonAncestors = folderPaths.Aggregate((intersected, list) => intersected.Intersect(list).ToList());
+
+            return PerplexFolder.Get(commonAncestors.Last());
+        }
+
+        /// <summary>
+        /// In the User section we can specify the start folders for a given user.
+        /// Those folders and subfolders are accessible, others are not.
+        /// This returns the list of folders set as start folders for the current backoffice user.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public static List<PerplexFolder> GetStartFoldersForCurrentUser()
+        {
+            var user = UmbracoContext.Current.Security.CurrentUser;
+            return GetStartFoldersForUser(user);            
+        }
+
+        /// <summary>
+        /// Returns the start folders for the given user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static List<PerplexFolder> GetStartFoldersForUser(IUser user)
+        {
+            if (user == null)
+                return new List<PerplexFolder>();
+
+            // We cache the result by user id, 
+            // to prevent unnecessary SQL queries
+            string cacheKey = "_Perplex_StartFolders_" + user.Id;
+
+            List<PerplexFolder> folders = HttpContext.Current.Cache[cacheKey] as List<PerplexFolder>;
+
+            if (folders == null)
+            {
+                var sqlHelper = Helper.SqlHelper;
+                try
+                {
+                    var reader = sqlHelper.ExecuteReader(
+                        "SELECT formsStartNode FROM [perplexUmbracoUser] WHERE userId = @userId",
+                        sqlHelper.CreateParameter("@userId", user.Id)
+                    );
+
+                    folders = new List<PerplexFolder>();
+                    while (reader.Read())
+                    {
+                        string folderId = reader.Get<string>("formsStartNode");
+                        PerplexFolder folder = PerplexFolder.Get(folderId);
+                        if (folder != null)
+                        {
+                            folders.Add(folder);
+                        }
+                    }
+                }
+                catch (Exception) { folders = new List<PerplexFolder>(); }
+
+                HttpContext.Current.Cache[cacheKey] = folders;
+            }
+
+            return folders;
         }
     }
 }

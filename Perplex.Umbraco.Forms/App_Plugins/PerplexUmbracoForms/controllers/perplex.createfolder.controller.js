@@ -8,7 +8,7 @@
 	            var folder = response.data;                
 
                 // Navigate to the created folder's path in the tree
-	            navigationService.syncTree({ tree: "form", path: folder.path, forceReload: true, activate: true });
+	            navigationService.syncTree({ tree: "form", path: folder.relativePath, forceReload: true, activate: true });
 
                 // Hide the tree
 	            navigationService.hideNavigation();

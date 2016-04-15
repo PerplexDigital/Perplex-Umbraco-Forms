@@ -1,6 +1,5 @@
-﻿<div ng-controller="Perplex.Form.FolderController" class="perplex-folder">
+﻿<div ng-controller="Perplex.Form.FolderController" class="perplex-folder">   
     <form novalidate ng-submit="update()">
-
         <div class="umb-panel-header">
             <div class="row-fluid">
                 <div>
@@ -15,22 +14,28 @@
 
         <div class="umb-panel-body umb-scrollable row-fluid">
             <div class="umb-pane perplex-sort perplex-folder">
-                <p ng-if="folder && (folder.folder.length > 0 || folder.forms.length > 0)">
+                <div ng-if="folder && !folder.disabled && (folder.folder.length > 0 || folder.forms.length > 0)">
                     <h4>Reorder folders and forms using drag &amp; drop</h4>
                     <hr />
-                </p>
+                </div>
 
                 <div ng-if="folder && folder.folders.length > 0">
                     <h4 class="bold">Folders</h4>
-                    <ul class="folders" ui-sortable ng-model="folder.folders">
+                    <ul class="folders" ui-sortable ng-model="folder.folders" ng-if="!folder.disabled">
                         <li ng-repeat="folder in folder.folders">
                             <i class="icon umb-tree-icon sprTree icon-folder-close"></i><a href="#/forms/perplexForms/folder/{{ folder.id }}">{{ folder.name }}</a>
                         </li>
                     </ul>
-                </div>
-                <br />
 
-                <div ng-if="folder && folder.forms.length > 0">
+                    <ul class="folders" ng-if="folder.disabled">
+                        <li ng-repeat="folder in folder.folders">
+                            <i class="icon umb-tree-icon sprTree icon-folder-close"></i><a href="#/forms/perplexForms/folder/{{ folder.id }}">{{ folder.name }}</a>
+                        </li>
+                    </ul>
+                    <br />
+                </div>
+
+                <div ng-if="folder && !folder.disabled && folder.forms.length > 0">
                     <h4 class="bold">Forms</h4>
                     <ul class="folders" ui-sortable ng-model="folder.forms">
                         <li ng-repeat="form in folder.forms">
@@ -40,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="umb-tab-buttons" style="padding-left: 15px;">
+            <div class="umb-tab-buttons" style="padding-left: 15px;" ng-if="!folder.disabled">
                 <div class="btn-group">
                     <button data-hotkey="ctrl+s" class="btn btn-success">
                         <localize key="buttons_save" class="ng-isolate-scope ng-scope">Save</localize>
@@ -49,4 +54,5 @@
             </div>
         </div>
     </form>
+
 </div>

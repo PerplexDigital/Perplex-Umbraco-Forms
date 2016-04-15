@@ -1,4 +1,6 @@
-﻿.perplex-move-form, .perplex-move-folder, .perplex-umbraco-form-picker, .perplex-sort {
+﻿@disabledFolderColor: #aaaaaa;
+
+.perplex-move-form, .perplex-move-folder, .perplex-umbraco-form-picker, .perplex-sort, .perplex-form-start-nodes {
     ul.folders {
         list-style-type: none;
         margin: 0;
@@ -30,6 +32,10 @@
             i.icon {
                 margin-right: 10px;
             }
+
+            &.disabled {
+                color: gray;
+            }
         }
     }
 }
@@ -46,7 +52,12 @@
 
             &:hover {
                 cursor: pointer;
-                background-color: #f8f8f8;                
+                background-color: #f8f8f8;       
+                
+                &.disabled {
+                    cursor: default;
+                    background-color: inherit;
+                }         
             }
         }
     }
@@ -71,8 +82,8 @@
     }
 }
 
-.perplex-umbraco-form-picker {
-    /* Clear button */
+.perplex-umbraco-form-picker, .perplex-form-start-nodes {
+    /* Clear button */  
     .clear {
         margin-top: 20px;
 
@@ -80,8 +91,6 @@
             &:hover { cursor: pointer; }
         }
     }
-
-    
 
     ul.folders {
         li {
@@ -103,6 +112,11 @@
                 &:hover {
                     cursor: pointer;
                     background-color: #f8f8f8;                
+                }
+
+                &.selected {
+                    color: black;
+                    font-weight: bold;
                 }
             }
 
@@ -128,6 +142,14 @@
     }          
 }
 
+.perplex-form-start-nodes {
+    ul.folders {
+        .folder.disabled {
+            color: @disabledFolderColor;
+        }
+    }
+}
+
 .perplex-create-folder {
     .folder-name {
         padding: 5px 10px; 
@@ -140,6 +162,40 @@
             input[type="checkbox"] {
                 margin-right: 5px;
                 margin-bottom: 5px;
+            }
+        }
+    }
+}
+
+ul.umb-tree[section="forms"] {
+    li {
+        & > div.disabled {
+            & > a {
+                color: @disabledFolderColor;
+            }
+
+            & > i.icon {                
+                color: @disabledFolderColor;
+            }
+        }
+
+        &.current {
+            & > div.disabled {
+                background-color: @disabledFolderColor;
+
+                & > ins {
+                    background-color: @disabledFolderColor;
+                    border-color: @disabledFolderColor;
+                }
+
+                & > a {
+                    background-color: @disabledFolderColor;
+                }
+
+                & > i.icon {                
+                    background-color: @disabledFolderColor;
+                    border-color: @disabledFolderColor;
+                }
             }
         }
     }

@@ -1,0 +1,28 @@
+﻿<div class="perplex-forms-start-nodes">
+    <script type="text/ng-template" id="folder.html">
+        <div ng-show="showFolder(folder)">
+            <div class="folder" ng-class="{ selected: folder.selected, disabled: folder.disabled }">
+                <ins ng-click="toggleFolder(folder)"  ng-if="folder.folders.length > 0" ng-class="{'icon-navigation-right': !folder.expanded, 'icon-navigation-down': folder.expanded}"></ins>
+                <i class="icon umb-tree-icon sprTree icon-folder-close"></i>
+                <span ng-click="selectFolder(folder)">{{ folder.name }}</span>
+            </div>
+
+            <ul ng-if="folder.folders.length > 0" class="folders">
+                <li ng-repeat="folder in folder.folders" ng-include="'folder.html'" class="depth-{{ folder.path.length }}" />
+            </ul>
+        </div>
+    </script>
+
+    <umb-control-group label="Start Nodes in Forms" description="Set one or more start nodes in Forms for this user. By default, all nodes are accessible. Selecting any folders on the right will restrict the user to those folders and sub folders, meaning the user will only be able to edit or create forms stored in those folders. Any inaccessible folders will be grayed out on the right after selecting one or more folders.">
+        <div class="perplex-form-start-nodes">
+            <div ng-if="!loading">
+                <ul ng-if="folders && folders.length > 0" class="folders">
+                    <li ng-repeat="folder in folders" ng-include="'folder.html'" class="depth-{{ folder.path.length }}" />
+                </ul>
+                <div class="clear">
+                    <a ng-click="clear()" ng-show="startNodes.length > 0">Clear</a>
+                </div>
+            </div>
+        </div>
+    </umb-control-group>
+</div>

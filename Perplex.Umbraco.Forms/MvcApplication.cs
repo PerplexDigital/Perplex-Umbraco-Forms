@@ -12,6 +12,7 @@ using Umbraco.Forms.Data.Storage;
 using PerplexUmbraco.Forms.Code;
 using System.Web;
 using System.Web.Caching;
+using Umbraco.Forms.Data;
 
 namespace PerplexUmbraco.Forms
 {
@@ -38,6 +39,13 @@ namespace PerplexUmbraco.Forms
 
             FormStorage.Created += FormStorage_Created;
             FormStorage.Deleted += FormStorage_Deleted;
+
+            // Create perplexUmbracoUser for storage of Forms start nodes
+            // if it does not exist already. There seem to be some issues with SqlServer CE,
+            // it does not support some statements in this query.
+            // Those will be fixed later, for now we continue
+            try { Helper.SqlHelper.ExecuteNonQuery(PerplexUmbraco.Forms.Code.Constants.SQL_CREATE_PERPLEX_USER_TABLE_IF_NOT_EXISTS); }
+            catch (Exception) { }
         }
 
         void FormStorage_Created(object sender, Umbraco.Forms.Core.FormEventArgs e)
@@ -52,7 +60,7 @@ namespace PerplexUmbraco.Forms
             var folder = PerplexFolder.Get(folderId.ToString());
             if (folder == null) return;
 
-            folder.forms.Add(form.Id.ToString());
+            folder.Forms.Add(form.Id.ToString());
             PerplexFolder.SaveAll();
         }
 
@@ -60,10 +68,10 @@ namespace PerplexUmbraco.Forms
         {
             // If this Form was stored in a Folder, remove it.
             var form = e.Form;
-            var folder = PerplexFolder.Get(f => f.forms.Any(fid => fid == form.Id.ToString()));
+            var folder = PerplexFolder.Get(f => f.Forms.Any(fid => fid == form.Id.ToString()));
             if (folder != null)
             {
-                folder.forms.Remove(form.Id.ToString());
+                folder.Forms.Remove(form.Id.ToString());
                 PerplexFolder.SaveAll();
             }
         }

@@ -18,7 +18,11 @@
         "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.movefolder.controller.js",
         "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.umbracoformpicker.controller.js",
         "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.sort.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.folder.controller.js"
+        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.folder.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.formssecurity.edit.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.navigationservice.decorator.js",
+        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.routing.js",
+        "~/App_Plugins/PerplexUmbracoForms/directives/perplex-forms-start-nodes.js"
     ],
 
     "css": [

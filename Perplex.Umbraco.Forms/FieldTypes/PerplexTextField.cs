@@ -22,7 +22,7 @@ namespace PerplexUmbraco.Forms.FieldTypes
         public string MaximumLength { get; set; }
 
         [Umbraco.Forms.Core.Attributes.Setting("Type",
-        view = "dropdownlist", prevalues = "email,tel,text,numeric")]
+        view = "dropdownlist", prevalues = "email,tel,text,number")]
         public string FieldType { get; set; }
 
         [Umbraco.Forms.Core.Attributes.Setting("Additional attributes",

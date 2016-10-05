@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace PerplexUmbraco.Forms.Code
     public class PerplexFolder
     {
         private const string FOLDER_JSON_PATH = "~/App_Plugins/PerplexUmbracoForms/data/folders.json";
-        
+
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
@@ -43,7 +44,7 @@ namespace PerplexUmbraco.Forms.Code
         {
             get
             {
-                // A deserialize triggers this property too, 
+                // A deserialize triggers this property too,
                 // but when we are *in* the deserialization process
                 // this cannot succeed since rootFolder isn't set yet
                 // This can be fixed with another ContractResolver (to just skip these dynamic getter-only properties)
@@ -70,7 +71,7 @@ namespace PerplexUmbraco.Forms.Code
         {
             get
             {
-                // A deserialize triggers this property too, 
+                // A deserialize triggers this property too,
                 // but when we are *in* the deserialization process
                 // this cannot succeed since rootFolder isn't set yet
                 // This can be fixed with another ContractResolver (to just skip these dynamic getter-only properties)
@@ -96,12 +97,12 @@ namespace PerplexUmbraco.Forms.Code
         /// This property should not actually be serialized to disk
         /// since it is different per user, but setting [JsonIgnore] will also
         /// cause the API controllers to not return this property anymore (which makes sense),
-        /// but we do use it for the UI so we will just serialize it anyway.        
+        /// but we do use it for the UI so we will just serialize it anyway.
         /// </summary>
         [JsonProperty(PropertyName = "disabled")]
         public bool Disabled
         {
-            get 
+            get
             {
                 // Determine this folder's startfolders
                 var startFolders = GetStartFoldersForCurrentUser();
@@ -110,7 +111,7 @@ namespace PerplexUmbraco.Forms.Code
                 if (!startFolders.Any())
                     return false;
 
-                // Otherwise, this folder is accessible only if 
+                // Otherwise, this folder is accessible only if
                 // it is a startfolder or a subfolder of a startfolder
                 // First check if this folder is a start folder itself
                 if (startFolders.Any(f => f == this))
@@ -118,7 +119,7 @@ namespace PerplexUmbraco.Forms.Code
 
                 // Then check if this folder is a descendant of the startfolder.
                 // Path contains all ancestors of this folder, so we use that instead of
-                // looking at all descendant folders of the start folders, which is way more inefficient                
+                // looking at all descendant folders of the start folders, which is way more inefficient
                 return !Path.Any(folderId => startFolders.Any(f => f.Id == folderId));
             }
         }
@@ -353,7 +354,7 @@ namespace PerplexUmbraco.Forms.Code
             // It's theoretically possible to trigger this method multiple times before writing of a previous call is finished,
             // triggering an I/O exception when the file is still locked for writing.
             // We ignore that error.
-            try { 
+            try {
                 var filePath = GetJsonFilePath();
                 var directory = System.IO.Path.GetDirectoryName(filePath);
                 if (!Directory.Exists(directory))
@@ -372,7 +373,7 @@ namespace PerplexUmbraco.Forms.Code
         /// <returns></returns>
         public static PerplexFolder GetCommonAncestor(List<PerplexFolder> folders)
         {
-            if (!folders.Any()) 
+            if (!folders.Any())
                 return null;
 
             // The common ancestor is found by simply taking the intersection of all folder paths
@@ -395,7 +396,7 @@ namespace PerplexUmbraco.Forms.Code
         public static List<PerplexFolder> GetStartFoldersForCurrentUser()
         {
             var user = UmbracoContext.Current.Security.CurrentUser;
-            return GetStartFoldersForUser(user);            
+            return GetStartFoldersForUser(user);
         }
 
         /// <summary>
@@ -408,7 +409,7 @@ namespace PerplexUmbraco.Forms.Code
             if (user == null)
                 return new List<PerplexFolder>();
 
-            // We cache the result by user id, 
+            // We cache the result by user id,
             // to prevent unnecessary SQL queries
             string cacheKey = "_Perplex_StartFolders_" + user.Id;
 
@@ -416,18 +417,18 @@ namespace PerplexUmbraco.Forms.Code
 
             if (folders == null)
             {
-                var sqlHelper = Helper.SqlHelper;
                 try
                 {
-                    var reader = sqlHelper.ExecuteReader(
-                        "SELECT formsStartNode FROM [perplexUmbracoUser] WHERE userId = @userId",
-                        sqlHelper.CreateParameter("@userId", user.Id)
-                    );
-
                     folders = new List<PerplexFolder>();
-                    while (reader.Read())
+
+                    var records = Sql.CreateSqlDataEnumerator(
+                        "SELECT formsStartNode FROM [perplexUmbracoUser] WHERE userId = @userId",
+                        System.Data.CommandType.Text,
+                        new { userId = user.Id });
+
+                    foreach(IDataRecord record in records)
                     {
-                        string folderId = reader.Get<string>("formsStartNode");
+                        string folderId = record["formsStartNode"].ToString();
                         PerplexFolder folder = PerplexFolder.Get(folderId);
                         if (folder != null)
                         {

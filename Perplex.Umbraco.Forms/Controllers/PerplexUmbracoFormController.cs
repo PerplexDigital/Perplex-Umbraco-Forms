@@ -291,12 +291,9 @@ namespace PerplexUmbraco.Forms.Controllers
                 return new HttpResponseMessage(HttpStatusCode.NotFound) { ReasonPhrase = "User with id " + userId + " not found" };
             }
 
-            // We use Umbraco Forms' standard SQL Helper
-            var sqlHelper = Helper.SqlHelper;
-
             // Remove any existing start folders
-            try { sqlHelper.ExecuteNonQuery("DELETE FROM [perplexUmbracoUser] WHERE userId = @userId", sqlHelper.CreateParameter("@userId", user.Id)); }
-            catch (Exception) { }            
+            try { Sql.ExecuteSql("DELETE FROM [perplexUmbracoUser] WHERE userId = @userId", parameters: new { userId = user.Id }); }
+            catch (Exception) { }
 
             if (folderIds != null)
             {
@@ -305,16 +302,18 @@ namespace PerplexUmbraco.Forms.Controllers
                 {
                     try
                     {
-                        sqlHelper.ExecuteNonQuery(
+                        Sql.ExecuteSql(
                             "INSERT INTO [perplexUmbracoUser](userId, formsStartNode) VALUES (@userId, @folderId)",
-                            sqlHelper.CreateParameter("@userId", userId),
-                            sqlHelper.CreateParameter("@folderId", folderId)
+                            parameters: new {
+                                userId = userId,
+                                folderId = folderId
+                            }
                         );
                     }
-                    catch (Exception) { }                    
+                    catch (Exception) { }
                 }
             }
-            
+
             // Clear cached start folders
             string cacheKey = "_Perplex_StartFolders_" + user.Id;
             HttpContext.Current.Cache.Remove(cacheKey);
@@ -332,9 +331,9 @@ namespace PerplexUmbraco.Forms.Controllers
             }
 
             return Request.CreateResponse(
-                HttpStatusCode.OK, 
+                HttpStatusCode.OK,
                 PerplexFolder.GetStartFoldersForUser(user)
-            );        
+            );
         }
 
         [HttpGet]

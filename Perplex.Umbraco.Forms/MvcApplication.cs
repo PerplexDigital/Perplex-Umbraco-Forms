@@ -44,7 +44,7 @@ namespace PerplexUmbraco.Forms
             // if it does not exist already. There seem to be some issues with SqlServer CE,
             // it does not support some statements in this query.
             // Those will be fixed later, for now we continue
-            try { Helper.SqlHelper.ExecuteNonQuery(PerplexUmbraco.Forms.Code.Constants.SQL_CREATE_PERPLEX_USER_TABLE_IF_NOT_EXISTS); }
+            try { Sql.ExecuteSql(PerplexUmbraco.Forms.Code.Constants.SQL_CREATE_PERPLEX_USER_TABLE_IF_NOT_EXISTS); }
             catch (Exception) { }
         }
 

@@ -200,24 +200,24 @@
       <HintPath>..\packages\UmbracoCms.Core.7.1.9\lib\umbraco.editorControls.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Forms.Core, Version=4.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.1.5\lib\Umbraco.Forms.Core.dll</HintPath>
+    <Reference Include="Umbraco.Forms.Core, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Forms.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Forms.Core.Providers, Version=4.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.1.5\lib\Umbraco.Forms.Core.Providers.dll</HintPath>
+    <Reference Include="Umbraco.Forms.Core.Providers, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Forms.Core.Providers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Forms.Web, Version=4.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.1.5\lib\Umbraco.Forms.Web.dll</HintPath>
+    <Reference Include="Umbraco.Forms.Web, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Forms.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Forms.Web.XmlSerializers, Version=4.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.1.5\lib\Umbraco.Forms.Web.XmlSerializers.dll</HintPath>
+    <Reference Include="Umbraco.Forms.Web.XmlSerializers, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Forms.Web.XmlSerializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Licensing, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.1.5\lib\Umbraco.Licensing.dll</HintPath>
+    <Reference Include="Umbraco.Licensing, Version=2.0.33.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Licensing.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="umbraco.MacroEngines, Version=1.0.5443.21815, Culture=neutral, processorArchitecture=MSIL">
@@ -244,6 +244,7 @@
   <ItemGroup>
     <Compile Include="Code\Constants.cs" />
     <Compile Include="Code\PerplexFolder.cs" />
+    <Compile Include="Code\Sql.cs" />
     <Compile Include="Controllers\PerplexFormTreeController.cs" />
     <Compile Include="Controllers\PerplexUmbracoFormController.cs" />
     <Compile Include="MvcApplication.cs" />

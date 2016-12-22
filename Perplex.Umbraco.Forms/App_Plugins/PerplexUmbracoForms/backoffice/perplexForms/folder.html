@@ -1,4 +1,4 @@
-﻿<div ng-controller="Perplex.Form.FolderController" class="perplex-folder">   
+﻿<div ng-controller="Perplex.Form.FolderController" class="perplex-folder">
     <form novalidate ng-submit="update()">
         <div class="umb-panel-header">
             <div class="row-fluid">
@@ -28,7 +28,7 @@
                     </ul>
 
                     <ul class="folders" ng-if="folder.disabled">
-                        <li ng-repeat="folder in folder.folders">
+                        <li ng-repeat="folder in folder.folders | filter:{ disabled: 'false' }">
                             <i class="icon umb-tree-icon sprTree icon-folder-close"></i><a href="#/forms/perplexForms/folder/{{ folder.id }}">{{ folder.name }}</a>
                         </li>
                     </ul>

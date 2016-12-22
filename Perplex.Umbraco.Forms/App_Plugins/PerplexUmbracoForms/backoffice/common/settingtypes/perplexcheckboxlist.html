@@ -1,0 +1,9 @@
+﻿<div ng-controller="SettingTypes.PerplexcheckboxlistController as ctrl">
+    <ul>
+        <li ng-repeat="value in ctrl.values" style="list-style: none;">
+            <label>
+                <input type="checkbox" ng-click="updateCheckboxValue(value);" ng-checked="selectedValues.indexOf(value) > -1" value="{{ value }}" /> {{ value }}
+            </label>
+        </li>
+    </ul>
+</div>

@@ -36,41 +36,15 @@ namespace PerplexUmbraco.Forms.FieldTypes
 
         public PerplexTextField()
         {
-            //Provider
-            this.Id = new Guid("9ead6835-57db-418b-ae2b-528f8db375a0");
-            this.Name = "Perplex Text field";
-            this.Description = "Renders a html input fieldKey";
-            this.Icon = "icon-autofill";
-            this.DataType = FieldDataType.String;
-            this.Category = "Simple";
-            this.SortOrder = 10;
+            Id = new Guid("9ead6835-57db-418b-ae2b-528f8db375a0");
+            Name = "Perplex Text field";
+            Description = "Renders a html input fieldKey";
+            Icon = "icon-autofill";
+            DataType = FieldDataType.String;
+            Category = "Simple";
+            SortOrder = 10;
         }
 
-        public override bool SupportsRegex
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        //public override IEnumerable<object> ConvertToRecord(Field field, IEnumerable<object> postedValues, HttpContextBase context)
-        //{
-        //    List<object> list = new List<object>();
-
-        //    list.Add(PerplexLib.Security.Encrypt(postedValues.FirstOrDefault().ToString(), "testkey41234"));
-
-        //    return (IEnumerable<object>)list;
-        //}
-
-        //public override IEnumerable<object> ConvertFromRecord(Field field, IEnumerable<object> storedValues)
-        //{
-        //    List<object> list = new List<object>();
-
-        //    list.Add(PerplexLib.Security.Decrypt(storedValues.FirstOrDefault().ToString(), "testkey41234"));
-
-        //    return (IEnumerable<object>)list;
-        //}
-
+        public override bool SupportsRegex => true;
     }
 }

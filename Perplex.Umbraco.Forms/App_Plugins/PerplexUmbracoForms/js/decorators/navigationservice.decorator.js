@@ -1,5 +1,5 @@
 ﻿angular.module('umbraco')
-.config(function($provide) {   
+.config(function($provide) {
     $provide.decorator('navigationService', function($delegate, $location, $routeParams, $q, perplexFormResource) {
         var syncTreeFn = $delegate.syncTree;
 
@@ -35,12 +35,12 @@
                     deferred.reject();
                     return;
                 }
-                
+
                 // Add folder path to the arguments for syncTree
                 Array.prototype.unshift.apply(arg.path, containingFolder.relativePath);
 
                 // We are done, resolve the promise
-                deferred.resolve(syncTreeFn.apply($delegate, newArgs));                
+                deferred.resolve(syncTreeFn.apply($delegate, newArgs));
             });
 
             return deferred.promise;

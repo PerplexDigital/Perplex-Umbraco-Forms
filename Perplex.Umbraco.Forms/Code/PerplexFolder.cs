@@ -17,8 +17,6 @@ namespace PerplexUmbraco.Forms.Code
 {
     public class PerplexFolder
     {
-        private const string FOLDER_JSON_PATH = "~/App_Plugins/PerplexUmbracoForms/data/folders.json";
-
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
@@ -133,7 +131,7 @@ namespace PerplexUmbraco.Forms.Code
         {
             if (rootFolder == null)
             {
-                var jsonFile = GetJsonFilePath();
+                var jsonFile = GetFilePath();
 
                 if (File.Exists(jsonFile))
                 {
@@ -296,9 +294,9 @@ namespace PerplexUmbraco.Forms.Code
             return Get(ParentId);
         }
 
-        public static string GetJsonFilePath()
+        public static string GetFilePath()
         {
-            return HostingEnvironment.MapPath(FOLDER_JSON_PATH);
+            return HostingEnvironment.MapPath(Constants.FOLDERS_DATA_FILE_PATH);
         }
 
         /// <summary>
@@ -355,7 +353,7 @@ namespace PerplexUmbraco.Forms.Code
             // triggering an I/O exception when the file is still locked for writing.
             // We ignore that error.
             try {
-                var filePath = GetJsonFilePath();
+                var filePath = GetFilePath();
                 var directory = System.IO.Path.GetDirectoryName(filePath);
                 if (!Directory.Exists(directory))
                 {

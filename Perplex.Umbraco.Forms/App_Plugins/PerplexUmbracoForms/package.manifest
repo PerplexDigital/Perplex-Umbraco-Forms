@@ -9,20 +9,25 @@
     }],
 
     "javascript": [
-        "~/App_Plugins/UmbracoForms/Backoffice/Common/SettingTypes/perplexcheckboxlist.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/resources/perplexFormResource.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.copy.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.moveform.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.createfolder.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.deletefolder.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.movefolder.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.umbracoformpicker.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.sort.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.folder.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.formssecurity.edit.controller.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.navigationservice.decorator.js",
-        "~/App_Plugins/PerplexUmbracoForms/controllers/perplex.routing.js",
-        "~/App_Plugins/PerplexUmbracoForms/directives/perplex-forms-start-nodes.js"
+        "~/App_Plugins/PerplexUmbracoForms/backoffice/common/settingtypes/perplexcheckboxlist.controller.js",
+
+        "~/App_Plugins/PerplexUmbracoForms/js/perplex.routing.js",
+
+        "~/App_Plugins/PerplexUmbracoForms/js/decorators/navigationservice.decorator.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/decorators/formresource.decorator.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/directives/perplex-forms-start-nodes.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/factories/perplex.constants.factory.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/resources/perplexFormResource.js",
+
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.copy.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.moveform.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.createfolder.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.deletefolder.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.movefolder.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.umbracoformpicker.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.sort.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.folder.controller.js",
+        "~/App_Plugins/PerplexUmbracoForms/js/controllers/perplex.formssecurity.edit.controller.js"
     ],
 
     "css": [

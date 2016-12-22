@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PerplexUmbraco.Forms.Code;
+using PerplexUmbraco.Forms.Code.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -350,6 +351,30 @@ namespace PerplexUmbraco.Forms.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, startFolders.Any()
                 ? PerplexFolder.GetCommonAncestor(startFolders)
                 : PerplexFolder.GetRootFolder());
+        }
+
+        [HttpGet]
+        public PerplexUmbracoFormsConfig GetConfiguration()
+        {
+            return PerplexUmbracoFormsConfig.Get;
+        }
+
+        [HttpGet]
+        public IEnumerable<FieldTypeConfig> GetHideFieldTypes()
+        {
+            return PerplexUmbracoFormsConfig.Get.HideFieldTypes;
+        }
+
+        [HttpGet]
+        public IEnumerable<string> GetFileUploadAllowedExtensions()
+        {
+            return PerplexUmbracoFormsConfig.Get.PerplexFileUpload.AllowedExtensions.Select(ae => ae.Extension);
+        }
+
+        [HttpGet]
+        public IEnumerable<string> GetImageUploadAllowedExtensions()
+        {
+            return PerplexUmbracoFormsConfig.Get.PerplexImageUpload.AllowedExtensions.Select(ae => ae.Extension);
         }
     }
 }

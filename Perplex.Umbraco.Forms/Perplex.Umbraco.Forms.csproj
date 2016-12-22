@@ -62,6 +62,10 @@
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EPPlus, Version=4.0.5.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.4.0\lib\EPPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Examine, Version=0.1.57.2941, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Examine.0.1.57.2941\lib\Examine.dll</HintPath>
       <Private>True</Private>
@@ -200,24 +204,24 @@
       <HintPath>..\packages\UmbracoCms.Core.7.1.9\lib\umbraco.editorControls.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Forms.Core, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Forms.Core.dll</HintPath>
+    <Reference Include="Umbraco.Forms.Core, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.4.0\lib\Umbraco.Forms.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Forms.Core.Providers, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Forms.Core.Providers.dll</HintPath>
+    <Reference Include="Umbraco.Forms.Core.Providers, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.4.0\lib\Umbraco.Forms.Core.Providers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Forms.Web, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Forms.Web.dll</HintPath>
+    <Reference Include="Umbraco.Forms.Web, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.4.0\lib\Umbraco.Forms.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Forms.Web.XmlSerializers, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Forms.Web.XmlSerializers.dll</HintPath>
+    <Reference Include="Umbraco.Forms.Web.XmlSerializers, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoForms.Core.4.4.0\lib\Umbraco.Forms.Web.XmlSerializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.Licensing, Version=2.0.33.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoForms.Core.4.3.2\lib\Umbraco.Licensing.dll</HintPath>
+      <HintPath>..\packages\UmbracoForms.Core.4.4.0\lib\Umbraco.Licensing.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="umbraco.MacroEngines, Version=1.0.5443.21815, Culture=neutral, processorArchitecture=MSIL">
@@ -242,12 +246,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\Configuration\ExtensionConfig.cs" />
+    <Compile Include="Code\Configuration\FieldTypeConfig.cs" />
+    <Compile Include="Code\Configuration\PerplexBaseFileConfig.cs" />
+    <Compile Include="Code\Configuration\PerplexRecaptchaConfig.cs" />
+    <Compile Include="Code\Configuration\PerplexFileUploadConfig.cs" />
+    <Compile Include="Code\Configuration\PerplexImageUploadConfig.cs" />
     <Compile Include="Code\Constants.cs" />
+    <Compile Include="Code\Extensions.cs" />
+    <Compile Include="Code\FieldTypeHelpers.cs" />
     <Compile Include="Code\PerplexFolder.cs" />
+    <Compile Include="Code\Configuration\PerplexUmbracoFormsConfig.cs" />
+    <Compile Include="FieldTypes\PerplexBaseFileFieldType.cs" />
+    <Compile Include="FieldTypes\PerplexRecaptcha.cs" />
+    <Compile Include="Code\UmbracoEvents.cs" />
     <Compile Include="Code\Sql.cs" />
     <Compile Include="Controllers\PerplexFormTreeController.cs" />
     <Compile Include="Controllers\PerplexUmbracoFormController.cs" />
-    <Compile Include="MvcApplication.cs" />
     <Compile Include="FieldTypes\PerplexFileUpload.cs" />
     <Compile Include="FieldTypes\PerplexImageUpload.cs" />
     <Compile Include="FieldTypes\PerplexTextarea.cs" />
@@ -263,32 +278,46 @@
     <None Include="App_Plugins\PerplexUmbracoForms\css\style.less" />
     <None Include="App_Plugins\PerplexUmbracoForms\data\folders.json" />
     <None Include="App_Plugins\PerplexUmbracoForms\package.manifest" />
+    <None Include="App_Plugins\PerplexUmbracoForms\PerplexUmbracoForms.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
+    <None Include="Views\Partials\Forms\Fieldtypes\FieldType.PerplexRecaptcha.cshtml" />
     <None Include="Views\Partials\Forms\Fieldtypes\FieldType.PerplexFileUpload.cshtml" />
     <None Include="Views\Partials\Forms\Fieldtypes\FieldType.PerplexImageUpload.cshtml" />
     <None Include="Views\Partials\Forms\Fieldtypes\FieldType.PerplexTextarea.cshtml" />
     <None Include="Views\Partials\Forms\Fieldtypes\FieldType.PerplexTextField.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\common\fieldtypes\PerplexFileUpload.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\common\fieldtypes\PerplexImageUpload.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\common\fieldtypes\PerplexRecaptcha.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\common\fieldtypes\Perplextextarea.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\common\fieldtypes\Perplextextfield.html" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\common\settingtypes\perplexcheckboxlist.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\common\settingtypes\perplexcheckboxlist.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\formsecurity\edit.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\backoffice\perplexForms\folder.html" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.routing.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.formssecurity.edit.controller.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.copy.controller.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.createfolder.controller.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.deletefolder.controller.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.folder.controller.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.movefolder.controller.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.moveform.controller.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.navigationservice.decorator.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.sort.controller.js" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\controllers\perplex.umbracoformpicker.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\img\recaptcha.png" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\decorators\navigationservice.decorator.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\perplex.routing.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.formssecurity.edit.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.copy.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.createfolder.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.deletefolder.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.folder.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.movefolder.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.moveform.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\decorators\formresource.decorator.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.sort.controller.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\controllers\perplex.umbracoformpicker.controller.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\css\style.css">
       <DependentUpon>style.less</DependentUpon>
     </Content>
-    <Content Include="App_Plugins\PerplexUmbracoForms\directives\perplex-forms-start-nodes.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\directives\perplex-forms-start-nodes.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\factories\perplex.constants.factory.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\propertyeditors\formpicker.html" />
-    <Content Include="App_Plugins\PerplexUmbracoForms\resources\perplexFormResource.js" />
+    <Content Include="App_Plugins\PerplexUmbracoForms\js\resources\perplexFormResource.js" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\copyForm.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\createFolder.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\deleteFolder.html" />
@@ -296,13 +325,8 @@
     <Content Include="App_Plugins\PerplexUmbracoForms\views\moveFolder.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\moveForm.html" />
     <Content Include="App_Plugins\PerplexUmbracoForms\views\sort.html" />
-    <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\FieldTypes\PerplexFileUpload.html" />
-    <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\FieldTypes\PerplexImageUpload.html" />
-    <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\FieldTypes\Perplextextarea.html" />
-    <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\FieldTypes\Perplextextfield.html" />
-    <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\SettingTypes\perplexcheckboxlist.controller.js" />
-    <Content Include="App_Plugins\UmbracoForms\Backoffice\Common\SettingTypes\perplexcheckboxlist.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

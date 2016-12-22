@@ -32,22 +32,15 @@ namespace PerplexUmbraco.Forms.FieldTypes
 
         public PerplexTextarea()
         {
-            //Provider
-            this.Id = new Guid("8c38cb28-8018-4545-b939-d1166a96b916");
-            this.Name = "Perplex Textarea";
-            this.Description = "Renders a html text area";
-            this.Icon = "icon-autofill";
-            this.DataType = FieldDataType.LongString;
-            this.Category = "Simple";
-            this.SortOrder = 20;
+            Id = new Guid("8c38cb28-8018-4545-b939-d1166a96b916");
+            Name = "Perplex Textarea";
+            Description = "Renders a html text area";
+            Icon = "icon-autofill";
+            DataType = FieldDataType.LongString;
+            Category = "Simple";
+            SortOrder = 20;
         }
 
-        public override bool SupportsRegex
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsRegex => true;
     }
 }

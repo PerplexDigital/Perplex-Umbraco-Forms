@@ -1,9 +1,0 @@
-﻿<div ng-controller="SettingTypes.PerplexcheckboxlistController" ng-init="init();">
-    <ul>
-        <li ng-repeat="prevalue in setting.prevalues" style="list-style: none;">
-            <label>
-                <input type="checkbox" ng-click="updateCheckboxValue(prevalue);" ng-checked="selectedValues.indexOf(prevalue) > -1" value="{{ prevalue }}" /> {{ prevalue }}
-            </label>
-        </li>
-    </ul>
-</div>

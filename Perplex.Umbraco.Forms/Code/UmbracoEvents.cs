@@ -170,7 +170,7 @@ namespace PerplexUmbraco.Forms.Code
             string errorMsg = GetSettingValue(
                 reCaptchaField,
                 nameof(PerplexRecaptcha.ErrorMessage),
-                PerplexUmbracoFormsConfig.Get.PerplexRecaptchConfig.ErrorMessage
+                PerplexUmbracoFormsConfig.Get.PerplexRecaptchaConfig.ErrorMessage
             );
 
             controller.ModelState.AddModelError(reCaptchaField.Id.ToString(), errorMsg);

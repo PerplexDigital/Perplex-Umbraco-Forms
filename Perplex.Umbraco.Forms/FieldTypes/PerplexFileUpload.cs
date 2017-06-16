@@ -7,6 +7,7 @@ using System.Web;
 
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Attributes;
+using static PerplexUmbraco.Forms.Code.Constants;
 
 namespace PerplexUmbraco.Forms.FieldTypes
 {
@@ -23,12 +24,12 @@ namespace PerplexUmbraco.Forms.FieldTypes
         {
             Id = new Guid("3e170f26-1fcb-4f60-b5d2-1aa2723528fd");
             Name = "Perplex file upload";
+            FieldTypeViewName = $"FieldType.{ nameof(PerplexFileUpload) }.cshtml";
             Description = "Renders an upload field";
             Icon = "icon-download-alt";
             DataType = FieldDataType.String;
             SortOrder = 10;
-            Category = "Simple";
-            FieldTypeViewName = $"FieldType.{ nameof(PerplexFileUpload) }.cshtml";
+            Category = "Simple";            
         }
     }
 }

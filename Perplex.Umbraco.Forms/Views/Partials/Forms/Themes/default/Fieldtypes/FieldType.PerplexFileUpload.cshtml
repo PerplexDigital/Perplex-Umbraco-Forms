@@ -1,0 +1,10 @@
+@model Umbraco.Forms.Mvc.Models.FieldViewModel
+@{
+    System.Diagnostics.Debugger.Break();
+}
+
+<input type="file" name="@Model.Name" id="@Model.Id" @(Model.AdditionalSettings.FirstOrDefault(x => x.Key == "MultiUpload").Value == "True" ? "multiple" : "")
+    @if (Model.Mandatory)
+    { <text> data-val="true" data-val-required="@Model.RequiredErrorMessage" </text> }
+    @Html.Raw(Model.AdditionalSettings.FirstOrDefault(x => x.Key == "AdditionalAttributes").Value)
+/>

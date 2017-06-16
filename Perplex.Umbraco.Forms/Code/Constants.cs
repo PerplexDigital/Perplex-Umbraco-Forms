@@ -52,7 +52,8 @@ namespace PerplexUmbraco.Forms.Code
             Hidden,
         }
 
-        public const string DATATYPE_ROOT_FOLDER = "~/App_Plugins/PerplexUmbracoForms";
+        public const string PERPLEX_FIELDTYPE_ROOT_FOLDER = "~/Views/Partials/Forms/Fieldtypes/Perplex";
+        public const string DATATYPE_ROOT_FOLDER = "~/App_Plugins/PerplexUmbracoForms";        
 
         /// <summary>
         /// Relative location of folders.json file

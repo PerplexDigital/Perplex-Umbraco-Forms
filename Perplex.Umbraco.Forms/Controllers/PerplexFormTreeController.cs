@@ -84,8 +84,8 @@ namespace PerplexUmbraco.Forms.Controllers
             {
                 int idxX, idxY;
 
-                idxX = folder.Forms.FindIndex(0, s => s == x.Id.ToString());
-                idxY = folder.Forms.FindIndex(0, s => s == y.Id.ToString());
+                idxX = folder.Forms.IndexOf(x.Id.ToString());
+                idxY = folder.Forms.IndexOf(y.Id.ToString());
 
                 return idxX.CompareTo(idxY);
             });

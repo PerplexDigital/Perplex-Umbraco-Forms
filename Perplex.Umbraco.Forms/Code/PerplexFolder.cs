@@ -27,10 +27,10 @@ namespace PerplexUmbraco.Forms.Code
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "forms")]
-        public List<string> Forms { get; set; }
+        public IList<string> Forms { get; set; } = new List<string>();
 
         [JsonProperty(PropertyName = "folders")]
-        public List<PerplexFolder> Folders { get; set; }
+        public IList<PerplexFolder> Folders { get; set; } = new List<PerplexFolder>();
 
         /// <summary>
         /// The path of this folder in the tree.
@@ -62,7 +62,10 @@ namespace PerplexUmbraco.Forms.Code
 
         /// <summary>
         /// The path, but relative to the Forms Root Node.
-        /// This is always a subset of Path
+        /// When no Start Nodes have been set for the current user, this
+        /// will always be the same as Path. If Start Nodes have been set,
+        /// it might be different, depending on which Start Nodes are set.
+        /// This is always a subset of Path.
         /// </summary>
         [JsonProperty(PropertyName = "relativePath")]
         public List<string> RelativePath
@@ -73,7 +76,7 @@ namespace PerplexUmbraco.Forms.Code
                 // but when we are *in* the deserialization process
                 // this cannot succeed since rootFolder isn't set yet
                 // This can be fixed with another ContractResolver (to just skip these dynamic getter-only properties)
-                // which will be implemented later.
+                // which might be implemented later.
                 if (rootFolder == null) return new List<string>();
 
                 List<PerplexFolder> startFolders = GetStartFoldersForCurrentUser();
@@ -155,8 +158,12 @@ namespace PerplexUmbraco.Forms.Code
                 }
 
                 // Something went wrong retrieving the rootFolder
-                // Create a new instance and write it to disk
-                if (rootFolder == null)
+                // Create a new instance and write it to disk.
+                // We also create a new root folder when the Id is missing.
+                // This can occur when the JSON was simply "{}" which will deserialize properly 
+                // but will yield a completely empty PerplexFolder with no data whatsoever, whereas
+                // an Id is required to function properly.
+                if (rootFolder == null || string.IsNullOrEmpty(rootFolder.Id))
                 {
                     rootFolder = CreateNewRoot();
                     SaveAll();

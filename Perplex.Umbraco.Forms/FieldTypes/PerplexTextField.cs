@@ -7,6 +7,7 @@ using System.Web;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Extensions;
 using Umbraco.Forms.Data;
+using static PerplexUmbraco.Forms.Code.Constants;
 
 namespace PerplexUmbraco.Forms.FieldTypes
 {
@@ -38,6 +39,7 @@ namespace PerplexUmbraco.Forms.FieldTypes
         {
             Id = new Guid("9ead6835-57db-418b-ae2b-528f8db375a0");
             Name = "Perplex Text field";
+            FieldTypeViewName = $"FieldType.{ nameof(PerplexTextField) }.cshtml";
             Description = "Renders a html input fieldKey";
             Icon = "icon-autofill";
             DataType = FieldDataType.String;

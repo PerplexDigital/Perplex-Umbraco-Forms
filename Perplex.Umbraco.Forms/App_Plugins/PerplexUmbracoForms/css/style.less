@@ -1,4 +1,5 @@
 ﻿@disabledFolderColor: #aaaaaa;
+@highlightColor: #00aea2;
 
 .perplex-move-form, .perplex-move-folder, .perplex-umbraco-form-picker, .perplex-sort, .perplex-form-start-nodes {
     ul.folders {
@@ -46,7 +47,7 @@
             padding: 3px 5px 6px 5px;
 
             &.active, &.active:hover {
-                background-color: #2e8aea;
+                background-color: @highlightColor;
                 color: white;
             }
 
@@ -83,27 +84,27 @@
 }
 
 .perplex-umbraco-form-picker, .perplex-form-start-nodes {
-    /* Clear button */  
+    /* Clear button */
     .clear {
         margin-top: 20px;
 
-        a {     
-            &:hover { cursor: pointer; }
+        a {
+            &:hover {
+                cursor: pointer;
+            }
         }
     }
 
     ul.folders {
-        li {
-            font-size: 14px;
-
+        li {            
             margin-left: 25px !important;
 
             &.depth-1 {
                 margin-left: 5px !important;
             }
-            
+
             .folder {
-                padding: 5px 5px 5px 0;                
+                padding: 5px 5px 5px 0;
 
                 ins {
                     margin-left: -18px;
@@ -111,7 +112,7 @@
 
                 &:hover {
                     cursor: pointer;
-                    background-color: #f8f8f8;                
+                    background-color: #f8f8f8;
                 }
 
                 &.selected {
@@ -126,20 +127,19 @@
         }
     }
 
-     .form {        
-        padding: 5px;
-        font-size: 14px;
-                
+    .form {
+        padding: 5px;        
+
         i.icon {
             margin-right: 10px;
         }
 
         &.selected, &:hover {
-            background-color: #2e8aea;
+            background-color: @highlightColor;
             color: white;
             cursor: pointer;
         }
-    }          
+    }
 }
 
 .perplex-form-start-nodes {

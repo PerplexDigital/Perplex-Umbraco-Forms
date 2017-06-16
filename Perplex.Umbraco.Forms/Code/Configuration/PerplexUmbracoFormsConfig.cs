@@ -71,7 +71,7 @@ namespace PerplexUmbraco.Forms.Code.Configuration
 
         public PerplexImageUploadConfig PerplexImageUpload { get; set; }
 
-        public PerplexRecaptchaConfig PerplexRecaptchConfig { get; set; }
+        public PerplexRecaptchaConfig PerplexRecaptchaConfig { get; set; }
 
         private static string GetFilePath()
         {
@@ -136,7 +136,7 @@ namespace PerplexUmbraco.Forms.Code.Configuration
                 MaxFileSizeRaw = ""
             },
 
-            PerplexRecaptchConfig = new PerplexRecaptchaConfig
+            PerplexRecaptchaConfig = new PerplexRecaptchaConfig
             {
                 ErrorMessage = ""
             }

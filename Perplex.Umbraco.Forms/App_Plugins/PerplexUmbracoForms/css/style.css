@@ -119,7 +119,7 @@
 .perplex-move-form ul.folders li.active:hover,
 .perplex-move-folder ul.folders li.active:hover,
 .perplex-sort ul.folders li.active:hover {
-  background-color: #2e8aea;
+  background-color: #00aea2;
   color: white;
 }
 .perplex-move-form ul.folders li:hover,
@@ -158,7 +158,6 @@
 }
 .perplex-umbraco-form-picker ul.folders li,
 .perplex-form-start-nodes ul.folders li {
-  font-size: 14px;
   margin-left: 25px !important;
 }
 .perplex-umbraco-form-picker ul.folders li.depth-1,
@@ -190,7 +189,6 @@
 .perplex-umbraco-form-picker .form,
 .perplex-form-start-nodes .form {
   padding: 5px;
-  font-size: 14px;
 }
 .perplex-umbraco-form-picker .form i.icon,
 .perplex-form-start-nodes .form i.icon {
@@ -200,7 +198,7 @@
 .perplex-form-start-nodes .form.selected,
 .perplex-umbraco-form-picker .form:hover,
 .perplex-form-start-nodes .form:hover {
-  background-color: #2e8aea;
+  background-color: #00aea2;
   color: white;
   cursor: pointer;
 }

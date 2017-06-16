@@ -7,6 +7,7 @@ using System.Web;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Extensions;
 using Umbraco.Forms.Data;
+using static PerplexUmbraco.Forms.Code.Constants;
 
 namespace PerplexUmbraco.Forms.FieldTypes
 {
@@ -34,6 +35,7 @@ namespace PerplexUmbraco.Forms.FieldTypes
         {
             Id = new Guid("8c38cb28-8018-4545-b939-d1166a96b916");
             Name = "Perplex Textarea";
+            FieldTypeViewName = $"FieldType.{ nameof(PerplexTextarea) }.cshtml";
             Description = "Renders a html text area";
             Icon = "icon-autofill";
             DataType = FieldDataType.LongString;

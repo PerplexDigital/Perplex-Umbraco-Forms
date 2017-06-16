@@ -13,6 +13,7 @@ namespace PerplexUmbraco.Forms.Code.Recaptcha
         {
             Id = new Guid(EnmFieldTypeId.PerplexRecaptcha.Description());
             Name = "Perplex Recaptcha";
+            FieldTypeViewName = $"FieldType.{ nameof(PerplexRecaptcha) }.cshtml";
             Description = "New and improved Google Recaptcha";
             Icon = "icon-eye";
             DataType = FieldDataType.String;

@@ -1,8 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Web.Hosting;
+﻿using Newtonsoft.Json.Linq;
+using PerplexUmbraco.Forms.Code.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Web;
+using System.Linq;
+using Umbraco.Core.Logging;
 using Umbraco.Forms.Core;
-using Umbraco.Forms.Core.Attributes;
 using static PerplexUmbraco.Forms.Code.Constants;
 
 namespace PerplexUmbraco.Forms.Code.Recaptcha
@@ -20,9 +24,67 @@ namespace PerplexUmbraco.Forms.Code.Recaptcha
             SortOrder = 21;
         }
 
-        [Setting("Error message",
+        [Umbraco.Forms.Core.Attributes.Setting("Error message",
             description = "The error message to display when the user does not pass the Recaptcha check",
             view = "TextField")]
         public string ErrorMessage { get; set; }
+
+        public override IEnumerable<string> ValidateField(Form form, Field field, IEnumerable<object> postedValues, HttpContextBase context)
+        {
+            var secretKey = Umbraco.Forms.Core.Configuration.GetSetting("RecaptchaPrivateKey");
+
+            // Get configured error message, either from this field or the XML configuration file.
+            // The ErrorMessage property is empty here, for some reason.
+            string fieldError = FieldTypeHelpers.GetSettingValue(field, nameof(ErrorMessage));
+            string errorMsg = fieldError?.Length > 0 ? fieldError: PerplexUmbracoFormsConfig.Get.PerplexRecaptchaConfig?.ErrorMessage;            
+
+            if (string.IsNullOrEmpty(secretKey))
+            {
+                // just return the error message
+                LogHelper.Warn<UmbracoEvents>("ERROR: ReCaptcha v.2 is missing the Secret Key - Please update the '/app_plugins/umbracoforms/umbracoforms.config' to include 'key=\"RecaptchaPrivateKey\"'");
+                return new[] { errorMsg };
+            }
+
+            var reCaptchaResponse = context.Request["g-recaptcha-response"];
+            var url = $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={reCaptchaResponse}";
+
+            var isSuccess = false;
+            var errorCodes = new List<string>();
+
+            using (var client = new WebClient())
+            {
+                var response = client.DownloadString(url);
+
+                var responseParsed = JObject.Parse(response);
+
+                //Get Success Status
+                JToken sucessToken;
+                var sucessFound = responseParsed.TryGetValue("success", out sucessToken);
+                if (sucessFound)
+                {
+                    isSuccess = sucessToken.Value<bool>();
+                }
+
+                //Get Error codes
+                JToken errorsToken;
+                var errorsFound = responseParsed.TryGetValue("error-codes", out errorsToken);
+                if (errorsFound)
+                {
+                    var errorsChildren = errorsToken.Children();
+                    errorCodes.AddRange(errorsChildren.Select(child => child.Value<string>()));
+                }
+                else
+                {
+                    errorCodes.Add("unknown-error");
+                }
+            }
+
+            if (isSuccess)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            return new[] { errorMsg };
+        }
     }
 }

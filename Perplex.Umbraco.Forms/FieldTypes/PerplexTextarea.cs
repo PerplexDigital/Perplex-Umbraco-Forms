@@ -13,6 +13,8 @@ namespace PerplexUmbraco.Forms.FieldTypes
 {
     public class PerplexTextarea : Umbraco.Forms.Core.FieldType
     {
+        // TODO: Also migrate these to an override of Settings(), there apparently are some issues with [Setting],
+        // at least when using a checkbox view.
         #region Settings
         [Umbraco.Forms.Core.Attributes.Setting("Placeholder",
         view = "TextField")]

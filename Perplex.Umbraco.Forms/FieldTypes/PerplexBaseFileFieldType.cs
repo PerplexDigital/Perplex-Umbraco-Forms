@@ -16,29 +16,17 @@ namespace PerplexUmbraco.Forms.FieldTypes
     /// </summary>
     public abstract class PerplexBaseFileFieldType : FileUpload
     {
-        protected virtual PerplexBaseFileConfig Config { get; }
-
         #region Settings
-        [Setting("Additional attributes", view = "TextField")]
         public string AdditionalAttributes { get; set; }
-        #endregion
-
-        public override bool StoresData => true;
-
-        #region Settings
-        [Setting("Allowed file types", description = "If nothing is checked, all in the list are allowed",
-        view = "perplexcheckboxlist")]
         public string AllowedFileTypes { get; set; }
-
-        [Setting("Allowed file types error message", description = "", view = "TextField")]
         public string AllowedFileTypesErrorMessage { get; set; }
-
-        [Setting("Maximum file size (in MB)", description = "The maximum file size for an uploaded file. When left empty, the value configured in PerplexUmbracoForms.config will be used", view = "TextField")]
         public string MaximumFileSize { get; set; }
-
-        [Setting("Maximum file size error message", description = "The error to display when the maximum file size exceeded. When left empty, the value configured in PerplexUmbracoForms.config will be used", view = "TextField")]
         public string MaximumFileSizeErrorMessage { get; set; }
         #endregion
+
+        protected virtual PerplexBaseFileConfig Config { get; }
+
+        public override bool StoresData => true;
 
         public override IEnumerable<string> ValidateField(Form form, Field field, IEnumerable<object> postedValues, HttpContextBase context)
         {
@@ -87,6 +75,55 @@ namespace PerplexUmbraco.Forms.FieldTypes
             }
 
             return base.ValidateField(form, field, postedValues, context);
+        }
+
+        public override Dictionary<string, Setting> Settings()
+        {
+            return new Dictionary<string, Setting>
+            {
+                 {
+                    "AdditionalAttributes",
+                    new Setting("Additional attributes")
+                    {
+                        view = "TextField"
+                    }
+                },
+
+                {
+                    "AllowedFileTypes",
+                    new Setting("Allowed file types")
+                    {
+                        description = "If nothing is checked, all in the list are allowed",
+                        view = "perplexcheckboxlist"
+                    }
+                },
+
+                {
+                    "AllowedFileTypesErrorMessage",
+                    new Setting("Allowed file types error message")
+                    {
+                        view = "TextField"
+                    }
+                },
+
+                {
+                    "MaximumFileSize",
+                    new Setting("Maximum file size (in MB)")
+                    {
+                        description = "The maximum file size for an uploaded file. When left empty, the value configured in PerplexUmbracoForms.config will be used",
+                        view = "TextField"
+                    }
+                },
+
+                {
+                    "MaximumFileSizeErrorMessage",
+                    new Setting("Maximum file size error message")
+                    {
+                        description = "The error to display when the maximum file size exceeded. When left empty, the value configured in PerplexUmbracoForms.config will be used",
+                        view = "TextField"
+                    }
+                },
+            };
         }
     }
 }

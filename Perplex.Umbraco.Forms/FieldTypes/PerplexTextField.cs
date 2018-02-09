@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using Umbraco.Forms.Core;
+using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Extensions;
 using Umbraco.Forms.Data;
 using static PerplexUmbraco.Forms.Code.Constants;
@@ -13,6 +14,8 @@ namespace PerplexUmbraco.Forms.FieldTypes
 {
     public class PerplexTextField : Umbraco.Forms.Core.FieldType
     {
+        // TODO: Also migrate these to an override of Settings(), there apparently are some issues with [Setting],
+        // at least when using a checkbox view.
         #region Settings
         [Umbraco.Forms.Core.Attributes.Setting("Placeholder",
         view = "TextField")]
@@ -47,6 +50,6 @@ namespace PerplexUmbraco.Forms.FieldTypes
             SortOrder = 10;
         }
 
-        public override bool SupportsRegex => true;
+        public override bool SupportsRegex => true;        
     }
 }

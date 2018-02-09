@@ -15,11 +15,6 @@ namespace PerplexUmbraco.Forms.FieldTypes
     {
         protected override PerplexBaseFileConfig Config => PerplexUmbracoFormsConfig.Get.PerplexFileUpload;
 
-        #region Settings
-        [Setting("Multi upload", description = "If checked, allows the user to upload multiple files", view = "checkbox")]
-        public bool MultiUpload { get; set; }
-        #endregion
-
         public PerplexFileUpload()
         {
             Id = new Guid("3e170f26-1fcb-4f60-b5d2-1aa2723528fd");
@@ -29,7 +24,20 @@ namespace PerplexUmbraco.Forms.FieldTypes
             Icon = "icon-download-alt";
             DataType = FieldDataType.String;
             SortOrder = 10;
-            Category = "Simple";            
+            Category = "Simple";
+        }
+
+        public override Dictionary<string, Setting> Settings()
+        {
+            Dictionary<string, Setting> settings = base.Settings() ?? new Dictionary<string, Setting>();
+
+            settings.Add("MultiUpload", new Setting("Multi upload")
+            {
+                description = "If checked, allows the user to upload multiple files",
+                view = "checkbox"
+            });
+
+            return settings;
         }
     }
 }

@@ -1,11 +1,8 @@
 ﻿using PerplexUmbraco.Forms.Code.Configuration;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
-using static PerplexUmbraco.Forms.Code.Constants;
 using Umbraco.Forms.Core;
+using Umbraco.Forms.Core.Attributes;
 
 namespace PerplexUmbraco.Forms.FieldTypes
 {
@@ -22,7 +19,20 @@ namespace PerplexUmbraco.Forms.FieldTypes
             Icon = "icon-download-alt";
             DataType = FieldDataType.String;
             SortOrder = 10;
-            Category = "Simple";            
+            Category = "Simple";
+        }
+
+        public override Dictionary<string, Setting> Settings()
+        {
+            Dictionary<string, Setting> settings = base.Settings() ?? new Dictionary<string, Setting>();
+
+            settings.Add("MultiUpload", new Setting("Multi upload")
+            {
+                description = "If checked, allows the user to upload multiple files",
+                view = "checkbox"
+            });
+
+            return settings;
         }
     }
 }

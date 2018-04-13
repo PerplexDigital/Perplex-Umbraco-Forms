@@ -21,18 +21,5 @@ namespace PerplexUmbraco.Forms.FieldTypes
             SortOrder = 10;
             Category = "Simple";
         }
-
-        public override Dictionary<string, Setting> Settings()
-        {
-            Dictionary<string, Setting> settings = base.Settings() ?? new Dictionary<string, Setting>();
-
-            settings.Add("MultiUpload", new Setting("Multi upload")
-            {
-                description = "If checked, allows the user to upload multiple files",
-                view = "checkbox"
-            });
-
-            return settings;
-        }
     }
 }

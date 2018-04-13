@@ -123,6 +123,15 @@ namespace PerplexUmbraco.Forms.FieldTypes
                         view = "TextField"
                     }
                 },
+
+                {
+                    "MultiUpload",
+                    new Setting("Multi upload")
+                    {
+                        description = "If checked, allows the user to upload multiple files",
+                        view = "checkbox"
+                    }
+                }
             };
         }
     }

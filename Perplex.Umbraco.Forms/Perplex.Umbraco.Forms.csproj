@@ -230,6 +230,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\Configuration\PerplexCacheConfig.cs" />
     <Compile Include="Code\Configuration\ExtensionConfig.cs" />
     <Compile Include="Code\Configuration\FieldTypeConfig.cs" />
     <Compile Include="Code\Configuration\PerplexBaseFileConfig.cs" />

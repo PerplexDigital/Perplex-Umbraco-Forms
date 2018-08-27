@@ -1,12 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web;
+
+using PerplexUmbraco.Forms.Code.Configuration;
+
 using Umbraco.Core;
 using Umbraco.Core.Logging;
-using PerplexUmbraco.Forms.Code.Configuration;
-using Umbraco.Web;
-using Umbraco.Forms.Data.Storage;
-using System;
 using Umbraco.Forms.Core;
+using Umbraco.Forms.Data.Storage;
+using Umbraco.Web;
 
 namespace PerplexUmbraco.Forms.Code
 {
@@ -64,6 +66,8 @@ namespace PerplexUmbraco.Forms.Code
 
             folder.Forms.Add(form.Id.ToString());
             PerplexFolder.SaveAll();
+
+            ClearFormsCache(folderId.ToString());
         }
 
         void FormStorage_Deleted(object sender, FormEventArgs e)
@@ -75,6 +79,22 @@ namespace PerplexUmbraco.Forms.Code
             {
                 folder.Forms.Remove(form.Id.ToString());
                 PerplexFolder.SaveAll();
+
+                ClearFormsCache(folder.Id);
+            }
+        }
+
+        void ClearFormsCache(string folderId)
+        {
+            var cacheConfig = PerplexUmbracoFormsConfig.Get.PerplexCacheConfig;
+
+            if (cacheConfig.EnableCache)
+            {
+                var cacheKey = $"PerplexFormTreeController_GetTreeNodes_id:{folderId}";
+                var rtCache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+
+                if (rtCache.GetCacheItemsByKeySearch(cacheKey).Any())
+                    rtCache.ClearCacheByKeySearch(cacheKey);
             }
         }
     }

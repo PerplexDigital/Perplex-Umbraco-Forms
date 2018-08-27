@@ -1,23 +1,18 @@
-﻿using Newtonsoft.Json;
-using PerplexUmbraco.Forms.Code;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Linq;
 using System.Net.Http.Formatting;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
-using System.Web.Hosting;
-using System.Web.Http;
-using Umbraco.Forms.Data;
+
+using PerplexUmbraco.Forms.Code;
+using PerplexUmbraco.Forms.Code.Configuration;
+
+using umbraco;
+using umbraco.BusinessLogic.Actions;
 using Umbraco.Forms.Web.Trees;
+using Umbraco.Web;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.Trees;
-using Umbraco.Web;
-using umbraco.BusinessLogic.Actions;
-using umbraco;
 
 namespace PerplexUmbraco.Forms.Controllers
 {
@@ -41,92 +36,126 @@ namespace PerplexUmbraco.Forms.Controllers
     {
         // We load our custom menu actions from our own folder
         private const string VIEWS_ROOT = "/App_Plugins/PerplexUmbracoForms/views/";
+        private readonly PerplexCacheConfig _cacheConfig;
 
-        public PerplexFormTreeController() { }
-
-        protected override Umbraco.Web.Models.Trees.TreeNodeCollection GetTreeNodes(string id, System.Net.Http.Formatting.FormDataCollection queryStrings)
+        public PerplexFormTreeController()
         {
+            _cacheConfig = PerplexUmbracoFormsConfig.Get.PerplexCacheConfig;
+        }
+
+        protected override TreeNodeCollection GetTreeNodes(string id, FormDataCollection queryStrings)
+        {
+            var cacheKey = $"PerplexFormTreeController_GetTreeNodes_id:{queryStrings["id"]}";
+            var rtCache = ApplicationContext.ApplicationCache.RuntimeCache;
+
             // If this is a form, use Umbraco's default behavior
             var folder = PerplexFolder.Get(id);
             if (folder == null)
             {
-                return base.GetTreeNodes(id, queryStrings);
-            }
+                var treeNodeCollection = _cacheConfig.EnableCache ? (TreeNodeCollection)rtCache.GetCacheItem(cacheKey) : (TreeNodeCollection)null;
 
-            // This is a folder
-
-            // We require all forms, and apply filtering based on folders later
-            var baseTreeNodes = base.GetTreeNodes("-1", queryStrings);
-
-            // Sanity check; make sure there are no orphan forms around
-            // (forms not contained within any folder). If so, move them to the root folder
-            var orphans = baseTreeNodes.Where(n => PerplexFolder.Get(f => f.Forms.Any(formId => formId == n.Id.ToString())) == null).ToList();
-            if(orphans.Count > 0)
-            {
-                foreach (var orphan in orphans)
+                if (treeNodeCollection == null)
                 {
-                    PerplexFolder.GetRootFolder().Forms.Add(orphan.Id.ToString());
-                }
+                    treeNodeCollection = base.GetTreeNodes(id, queryStrings);
 
-                PerplexFolder.SaveAll();
-            }
-
-            // Hide all Forms that are not contained within this folder
-            // If this folder itself is disabled (due to the user not having access),
-            // we also hide all its forms
-            baseTreeNodes.RemoveAll(n => 
-                !folder.Forms.Contains(n.Id.ToString()) ||
-                (folder.Disabled && folder.Forms.Contains(n.Id.ToString()))
-            );
-
-            // Sort the forms of this folder in the order as defined by the folder
-            baseTreeNodes.Sort((x, y) =>
-            {
-                int idxX, idxY;
-
-                idxX = folder.Forms.IndexOf(x.Id.ToString());
-                idxY = folder.Forms.IndexOf(y.Id.ToString());
-
-                return idxX.CompareTo(idxY);
-            });
-
-            // Add any subfolders of this node
-            // We loop through the list in reverse as we add every folder at the start of the list (before forms)
-            foreach (var subFolder in folder.Folders.Reverse<PerplexFolder>())
-            {
-                // If this subfolder is disabled, and it is not on a path towards
-                // a folder that is NOT disabled, it should not be listed at all.
-                // When multiple start nodes are defined, it is possible for a disabled
-                // folder to be displayed in the tree, when one of its descendant folders is enabled.
-                if (subFolder.Disabled)
-                {
-                    var startFolders = PerplexFolder.GetStartFoldersForCurrentUser();
-
-                    bool isOnPathTowardsStartFolder = startFolders.Any(sf => sf.Path.Any(fid => fid == subFolder.Id));
-                    if (!isOnPathTowardsStartFolder)
+                    if (_cacheConfig.EnableCache)
                     {
-                        continue;
+                        if (rtCache.GetCacheItemsByKeySearch(cacheKey).Any())
+                            rtCache.ClearCacheByKeySearch(cacheKey);
+
+                        rtCache.InsertCacheItem(cacheKey, () => treeNodeCollection, new TimeSpan(0, _cacheConfig.CacheDurationInMinutes, 0), true);
                     }
                 }
 
-                var treeNode = CreateTreeNode(subFolder.Id, id, queryStrings, subFolder.Name);
+                return treeNodeCollection;
+            }
 
-                // Clicking this folder will show the folder overview
-                // By default all nodes go to /forms/form/edit/<GUID>, but this
-                // is only valid for forms. We direct to our custom folder view
-                treeNode.RoutePath = "forms/perplexForms/folder/" + treeNode.Id;
-                if (subFolder.Disabled)
+            // This is a folder
+            var baseTreeNodes = _cacheConfig.EnableCache ? (TreeNodeCollection)rtCache.GetCacheItem(cacheKey) : (TreeNodeCollection)null;
+
+            if (baseTreeNodes == null)
+            {
+                // We require all forms, and apply filtering based on folders later
+                baseTreeNodes = base.GetTreeNodes("-1", queryStrings);
+
+                // Sanity check; make sure there are no orphan forms around
+                // (forms not contained within any folder). If so, move them to the root folder
+                var orphans = baseTreeNodes.Where(n => PerplexFolder.Get(f => f.Forms.Any(formId => formId == n.Id.ToString())) == null).ToList();
+                if (orphans.Count > 0)
                 {
-                    treeNode.CssClasses.Add("disabled");
+                    foreach (var orphan in orphans)
+                    {
+                        PerplexFolder.GetRootFolder().Forms.Add(orphan.Id.ToString());
+                    }
+
+                    PerplexFolder.SaveAll();
                 }
 
-                // Folder has children if it has either forms or folders.
-                // If it is disabled, this is only true when it has subfolders 
-                // since we do not show its forms.
-                treeNode.HasChildren = (subFolder.Disabled && subFolder.Folders.Any()) || (!subFolder.Disabled && (subFolder.Forms.Any() || subFolder.Folders.Any()));
+                // Hide all Forms that are not contained within this folder
+                // If this folder itself is disabled (due to the user not having access),
+                // we also hide all its forms
+                baseTreeNodes.RemoveAll(n =>
+                    !folder.Forms.Contains(n.Id.ToString()) ||
+                    (folder.Disabled && folder.Forms.Contains(n.Id.ToString()))
+                );
 
-                // Folders are added at the top of the list, before forms
-                baseTreeNodes.Insert(0, treeNode);
+                // Sort the forms of this folder in the order as defined by the folder
+                baseTreeNodes.Sort((x, y) =>
+                {
+                    int idxX, idxY;
+
+                    idxX = folder.Forms.IndexOf(x.Id.ToString());
+                    idxY = folder.Forms.IndexOf(y.Id.ToString());
+
+                    return idxX.CompareTo(idxY);
+                });
+
+                // Add any subfolders of this node
+                // We loop through the list in reverse as we add every folder at the start of the list (before forms)
+                foreach (var subFolder in folder.Folders.Reverse())
+                {
+                    // If this subfolder is disabled, and it is not on a path towards
+                    // a folder that is NOT disabled, it should not be listed at all.
+                    // When multiple start nodes are defined, it is possible for a disabled
+                    // folder to be displayed in the tree, when one of its descendant folders is enabled.
+                    if (subFolder.Disabled)
+                    {
+                        var startFolders = PerplexFolder.GetStartFoldersForCurrentUser();
+
+                        bool isOnPathTowardsStartFolder = startFolders.Any(sf => sf.Path.Any(fid => fid == subFolder.Id));
+                        if (!isOnPathTowardsStartFolder)
+                        {
+                            continue;
+                        }
+                    }
+
+                    var treeNode = CreateTreeNode(subFolder.Id, id, queryStrings, subFolder.Name);
+
+                    // Clicking this folder will show the folder overview
+                    // By default all nodes go to /forms/form/edit/<GUID>, but this
+                    // is only valid for forms. We direct to our custom folder view
+                    treeNode.RoutePath = "forms/perplexForms/folder/" + treeNode.Id;
+                    if (subFolder.Disabled)
+                    {
+                        treeNode.CssClasses.Add("disabled");
+                    }
+
+                    // Folder has children if it has either forms or folders.
+                    // If it is disabled, this is only true when it has subfolders 
+                    // since we do not show its forms.
+                    treeNode.HasChildren = (subFolder.Disabled && subFolder.Folders.Any()) || (!subFolder.Disabled && (subFolder.Forms.Any() || subFolder.Folders.Any()));
+
+                    // Folders are added at the top of the list, before forms
+                    baseTreeNodes.Insert(0, treeNode);
+                }
+
+                if (_cacheConfig.EnableCache)
+                {
+                    if (rtCache.GetCacheItemsByKeySearch(cacheKey).Any())
+                        rtCache.ClearCacheByKeySearch(cacheKey);
+
+                    rtCache.InsertCacheItem(cacheKey, () => baseTreeNodes, new TimeSpan(0, _cacheConfig.CacheDurationInMinutes, 0), true);
+                }
             }
 
             return baseTreeNodes;
@@ -139,7 +168,7 @@ namespace PerplexUmbraco.Forms.Controllers
 
             // If none are set, all folders are allowed so we just use default behavior
             // Likewise if the common ancestors of all allowed folders is the root.
-            PerplexFolder commonAncestor = PerplexFolder.GetCommonAncestor(startFolders);            
+            PerplexFolder commonAncestor = PerplexFolder.GetCommonAncestor(startFolders);
 
             if (!startFolders.Any() || commonAncestor == PerplexFolder.GetRootFolder())
             {
@@ -157,11 +186,11 @@ namespace PerplexUmbraco.Forms.Controllers
             // if this is the common ancestor of this user's start nodes but not
             // a start node itself. In that case it should also show as disabled in
             // the UI, and we hide its URL.
-            rootNode.RoutePath = "forms/perplexForms/folder/" + commonAncestor.Id;    
-            if(commonAncestor.Disabled)
+            rootNode.RoutePath = "forms/perplexForms/folder/" + commonAncestor.Id;
+            if (commonAncestor.Disabled)
             {
                 rootNode.CssClasses.Add("disabled");
-            }   
+            }
 
             // Folder has children if it has either forms or folders
             rootNode.HasChildren = commonAncestor.Forms.Any() || commonAncestor.Folders.Any();
@@ -197,10 +226,10 @@ namespace PerplexUmbraco.Forms.Controllers
                     {
                         menu.Items.RemoveAll(m => m.Alias != ActionRefresh.Instance.Alias);
                         return menu;
-                    }                   
+                    }
 
                     // Create Form (default Umbraco view, hence alias)
-                    AddMenuItem(menu, "Create Form", alias:  "create", icon: "icon icon-add");
+                    AddMenuItem(menu, "Create Form", alias: "create", icon: "icon icon-add");
 
                     // Create Folder
                     AddMenuItem(menu, "Create Folder", view: "createFolder", icon: "icon icon-folder");
@@ -239,7 +268,7 @@ namespace PerplexUmbraco.Forms.Controllers
                 var root = PerplexFolder.GetRootFolder();
 
                 // If the root folder is disabled, remove all menu actions except Reload
-                if(root.Disabled)
+                if (root.Disabled)
                 {
                     menu.Items.RemoveAll(m => m.Alias != ActionRefresh.Instance.Alias);
                     return menu;

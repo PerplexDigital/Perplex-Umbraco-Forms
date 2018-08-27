@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Hosting;
 using System.Xml.Serialization;
+
 using static PerplexUmbraco.Forms.Code.Constants;
 
 namespace PerplexUmbraco.Forms.Code.Configuration
@@ -73,6 +71,8 @@ namespace PerplexUmbraco.Forms.Code.Configuration
 
         public PerplexRecaptchaConfig PerplexRecaptchaConfig { get; set; }
 
+        public PerplexCacheConfig PerplexCacheConfig { get; set; }
+
         private static string GetFilePath()
         {
             return HostingEnvironment.MapPath(Constants.CONFIGURATION_FILE_PATH);
@@ -139,6 +139,12 @@ namespace PerplexUmbraco.Forms.Code.Configuration
             PerplexRecaptchaConfig = new PerplexRecaptchaConfig
             {
                 ErrorMessage = ""
+            },
+
+            PerplexCacheConfig = new PerplexCacheConfig
+            {
+                EnableCache = false,
+                CacheDurationInMinutes = 10
             }
         };
     }

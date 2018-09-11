@@ -1,13 +1,19 @@
-﻿using Newtonsoft.Json.Linq;
-using PerplexUmbraco.Forms.Code.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net;
 using System.Web;
 using System.Linq;
+
+using Newtonsoft.Json.Linq;
+
+using PerplexUmbraco.Forms.Code.Configuration;
+
 using Umbraco.Core.Logging;
 using Umbraco.Forms.Core;
+
 using static PerplexUmbraco.Forms.Code.Constants;
+
 
 namespace PerplexUmbraco.Forms.Code.Recaptcha
 {
@@ -32,13 +38,14 @@ namespace PerplexUmbraco.Forms.Code.Recaptcha
         public override IEnumerable<string> ValidateField(Form form, Field field, IEnumerable<object> postedValues, HttpContextBase context)
         {
             var secretKey = Umbraco.Forms.Core.Configuration.GetSetting("RecaptchaPrivateKey");
+            var recaptchaPrivateKey = ConfigurationManager.AppSettings["RecaptchaSecretKey"] ?? secretKey;
 
             // Get configured error message, either from this field or the XML configuration file.
             // The ErrorMessage property is empty here, for some reason.
             string fieldError = FieldTypeHelpers.GetSettingValue(field, nameof(ErrorMessage));
             string errorMsg = fieldError?.Length > 0 ? fieldError: PerplexUmbracoFormsConfig.Get.PerplexRecaptchaConfig?.ErrorMessage;            
 
-            if (string.IsNullOrEmpty(secretKey))
+            if (string.IsNullOrEmpty(recaptchaPrivateKey))
             {
                 // just return the error message
                 LogHelper.Warn<UmbracoEvents>("ERROR: ReCaptcha v.2 is missing the Secret Key - Please update the '/app_plugins/umbracoforms/umbracoforms.config' to include 'key=\"RecaptchaPrivateKey\"'");
@@ -46,7 +53,7 @@ namespace PerplexUmbraco.Forms.Code.Recaptcha
             }
 
             var reCaptchaResponse = context.Request["g-recaptcha-response"];
-            var url = $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={reCaptchaResponse}";
+            var url = $"https://www.google.com/recaptcha/api/siteverify?secret={recaptchaPrivateKey}&response={reCaptchaResponse}";
 
             var isSuccess = false;
             var errorCodes = new List<string>();

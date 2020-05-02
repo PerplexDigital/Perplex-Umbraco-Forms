@@ -265,6 +265,10 @@ namespace PerplexUmbraco.Forms.Controllers
                 }
             }
 
+            // delete any association between a user and this folder being deleted
+            try { Sql.ExecuteSql("DELETE FROM [perplexUmbracoUser] WHERE formsStartNode = @formsStartNode", parameters: new { formsStartNode = folderId }); }
+            catch (Exception) { }
+
             PerplexFolder parentFolder = folder.GetParent();
 
             // Remove this folder

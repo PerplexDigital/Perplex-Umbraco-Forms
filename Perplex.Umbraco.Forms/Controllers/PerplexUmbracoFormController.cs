@@ -11,11 +11,13 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
 using Umbraco.Core.IO;
+using Umbraco.Core.Models.Membership;
 using Umbraco.Forms.Core.Providers;
 using Umbraco.Forms.Data;
 using Umbraco.Forms.Data.Storage;
 using Umbraco.Forms.Mvc.Models.Backoffice;
 using Umbraco.Forms.Web.Models.Backoffice;
+using Umbraco.Web;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
@@ -134,6 +136,12 @@ namespace PerplexUmbraco.Forms.Controllers
 
             PerplexFolder.Add(folder, parentId);
 
+            // now find any users who have a content start type that matches the perplex folder's name
+            IEnumerable<IUser> users = Services.UserService.GetAll(0, int.MaxValue, out int total);
+
+            // with the new form created, check with users need to be assigned to its Form Start Node
+            StartNodeUserPermissions.ApplyFolderPermissionsToUsers(users, folder);
+
             return Request.CreateResponse(HttpStatusCode.OK, folder);
         }
 
@@ -154,6 +162,8 @@ namespace PerplexUmbraco.Forms.Controllers
             }
 
             folderToUpdate.Update(folder);
+
+            // TODO: Update() - add code to update the users' associated with this folder
 
             // Return the updated folder
             return Request.CreateResponse(HttpStatusCode.OK, folderToUpdate);
@@ -264,6 +274,9 @@ namespace PerplexUmbraco.Forms.Controllers
                     }
                 }
             }
+
+            // delete any association between a user and this folder being deleted
+            StartNodeUserPermissions.DeleteUserAssociationWithFolder(folderId);
 
             PerplexFolder parentFolder = folder.GetParent();
 
